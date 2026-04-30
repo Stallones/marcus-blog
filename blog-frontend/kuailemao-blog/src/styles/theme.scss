@@ -1,0 +1,157 @@
+// 亮色模式下的主题色
+:root {
+  // --mao-background-color: aliceblue; // 接近白色的淡蓝色
+  --mao-background-color: rgba(240, 248, 255, 0.7); // 近似白色的半透明背景
+  // 首页波浪
+  --mao-bg-wave01: rgba(240, 248, 255,0.1);
+  --mao-bg-wave02: rgba(240, 248, 255,0.3);
+  --mao-bg-wave03: rgba(240, 248, 255,0.5);
+  --mao-bg-wave04: rgba(240, 248, 255,0.1);
+  // 留言板说明背景
+  --mao-bg-message: #f5f5f5;
+  // 分类列表背景
+  --mao-bg-category:  linear-gradient(135deg,#17ead9,#6078ea);
+  // footer
+  --mao-bg-footer: linear-gradient(135deg,#17ead9,#6078ea);
+  // 评论框背景
+  --mao-bg-comment: #F2F2F3;
+  // 回复用户名
+  --mao-bg-reply: rgba(245, 108, 108, 0.7);
+  // 文章页面右下角滚动进度背景色
+  --mao-scroll-percentage-bg: #ffffff;
+  // 文章页面底部滚动进度条背景色
+  --mao-scroll-percentage-bar: linear-gradient(135deg,#17ead9,#6078ea);
+  // 设置模块背景阴影
+  --mao-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+  // 音乐播放器变量
+  --primary: #5cbfef;
+  --router-color: #dddddd;
+  --font-color: #676767;
+  --dark-font-color: #a7a7a7;
+  --second-font-color: #b3b7ff;
+  --hot-color: #f00;
+  --md-active: #409eff;
+  --global-white: #fff;
+  --global-black: #000;
+  --global-shadow-white: #fafafa;
+  --header-bg-color: #8a7e90;
+  --meta-color: #858585;
+  --comment-grey: #a4a4a4;
+  --border-color: #7ec4f2;
+  --hr-border: #a9d5f4;
+  --top: #f26c60;
+  --error: #f56c6c;
+  --music-main-active: #62c28a;
+  --music-main-bg: #101827;
+  --shadow-mask-bg: rgba(0, 0, 0, 0.5);
+  --shadow-button-bg: rgba(255, 255, 255, 0.5);
+  --global-font-size: 14px;
+  --card-box-shadow: 0 3px 6px 3px rgba(7, 17, 27, 0.06);
+  --card-hover-box-shadow: 0 3px 6px 3px rgba(7, 17, 27, 0.15);
+  // 亮色滚动条
+  --scroll-bar-color: linear-gradient(135deg,#17ead9,#6078ea);
+  // 充电榜列表亮色背景
+  --mao-charging-bg-color: #f5f5f5;
+  // Header-Menu阴影
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  // 卡片背景
+  --card-bg: #ffffff;
+  // 边框颜色
+  --border-color-light: #e5e7eb;
+  // 次级背景
+  --secondary-bg: #f9fafb;
+  // 主色调
+  --accent-color: #7c3aed;
+  // 主色调hover
+  --accent-color-hover: #6d28d9;
+}
+
+// 暗色模式主题色
+html.dark {
+  // 主背景
+  // --mao-background-color: #161b22;
+  --mao-background-color: rgba(22, 27, 34, 0.7);
+  // 首页波浪 - 深色透明
+  --mao-bg-wave01: rgba(22, 27, 34, 0.1);
+  --mao-bg-wave02: rgba(22, 27, 34, 0.3);
+  --mao-bg-wave03: rgba(22, 27, 34, 0.5);
+  --mao-bg-wave04: rgba(22, 27, 34, 0.1);
+  // 留言板背景
+  --mao-bg-message: #1e222d;
+  // 分类列表背景 - 紫色渐变
+  --mao-bg-category: linear-gradient(135deg,#7c3aed,#06b6d4);
+  // footer - 紫色渐变
+  --mao-bg-footer: linear-gradient(135deg,#7c3aed,#06b6d4);
+  --mao-bg-right: #1e222d;
+  --mao-bg-left: #2a2e39;
+  --mao-bg-left-card: #2a2e39;
+  // 评论框背景
+  --mao-bg-comment: #2a2e39;
+  // 回复用户名
+  --mao-bg-reply: rgba(124, 58, 237, 0.7);
+  // 文章页面右下角滚动进度背景色
+  --mao-scroll-percentage-bg: #1e222d;
+  // 文章页面底部滚动进度条背景色 - 紫色渐变
+  --mao-scroll-percentage-bar: linear-gradient(135deg,#7c3aed,#06b6d4);
+
+  // 音乐播放器变量
+  --global-white: #1e222d;
+  --global-shadow-white: #131722;
+  --mao-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.5);
+  // 暗色滚动条 - 紫色渐变
+  --scroll-bar-color: linear-gradient(135deg,#7c3aed,#06b6d4);
+  // 充电榜列表暗色背景
+  --mao-charging-bg-color: #1e222d;
+  // Header-Menu阴影
+  --shadow-color: rgba(0, 0, 0, 0.3);
+
+  // 卡片背景 
+  --card-bg: #ea0d0d;
+  // 边框颜色
+  --border-color-light: #2a2e39;
+  // 次级背景
+  --secondary-bg: #161b26;
+  // 主色调 - 紫色
+  --accent-color: #7c3aed;
+  // 主色调hover
+  --accent-color-hover: #6d28d9;
+
+  // Element Plus 暗黑模式主题覆盖
+  // 确保边框颜色与整体风格一致
+  --el-border-color: #2a2e39;
+  --el-border-color-light: #363a48;
+  --el-border-color-lighter: #404559;
+
+  // 确保文本颜色在深色背景下可读
+  --el-text-color-primary: #e5e7eb;
+  --el-text-color-regular: #d1d5db;
+  --el-text-color-secondary: #9ca3af;
+  --el-text-color-placeholder: #6b7280;
+
+  // 确保填充颜色与背景一致
+  --el-fill-color-blank: #1e222d;
+  --el-fill-color-light: #2a2e39;
+  --el-fill-color: #363a48;
+  --el-fill-color-lighter: #404559;
+
+  // 确保背景颜色
+  --el-bg-color: #000000 !important;
+  --el-bg-color-overlay: #1e222d;
+
+  // 主色调覆盖 - 紫色
+  --el-color-primary: #7c3aed;
+  --el-color-primary-light-3: #8b5cf6;
+  --el-color-primary-light-5: #a78bfa;
+  --el-color-primary-light-7: #c4b5fd;
+  --el-color-primary-light-8: #ddd6fe;
+  --el-color-primary-light-9: #ede9fe;
+  --el-color-primary-dark-2: #6d28d9;
+}
+
+// 全局字体
+body {
+  /* 将 body 元素或者任何其他你想要应用该字体的元素设置为 '阿里妈妈方圆体 VF Regular' */
+  font-family: "阿里妈妈方圆体 VF Regular", sans-serif;
+  /* 当自定义字体尚未加载时提供一个备选字体（在这个例子中是无衬线字体） */
+}
