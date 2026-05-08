@@ -113,5 +113,15 @@ public class WebsiteInfoController {
     public ResponseResult<Void> updateWebsiteInfo(@Valid @RequestBody WebsiteInfoDTO websiteInfoDTO) {
         return websiteInfoService.updateWebsiteInfo(websiteInfoDTO);
     }
+
+    /**
+     * 健康检查
+     * @return 服务状态
+     */
+    @Operation(summary = "健康检查")
+    @GetMapping("/health")
+    public ResponseResult<String> health() {
+        return ResponseResult.success("服务在线");
+    }
 }
 

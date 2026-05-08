@@ -99,7 +99,12 @@ export default defineConfig(({ mode }: ConfigEnv) => {
                 '/api': {
                     target: `${loadEnv(mode, process.cwd()).VITE_SERVE}`,
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, '')
+                    rewrite: (path) => path.replace(/^\/api/, ''),
+                    bypass: (req) => {
+                        if (req.url?.endsWith('.enc') || req.url?.endsWith('.json')) {
+                            return req.url
+                        }
+                    }
                 },
                 '/wapi': {
                     target: `${loadEnv(mode, process.cwd()).VITE_MUSIC_SERVE}`,

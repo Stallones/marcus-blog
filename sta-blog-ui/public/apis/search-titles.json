@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "categoryName": "技术",
+    "visitCount": 279,
+    "articleTitle": "java的继承"
+  },
+  {
+    "id": 3,
+    "categoryName": "技术",
+    "visitCount": 137,
+    "articleTitle": "今天出去玩了"
+  },
+  {
+    "id": 24,
+    "categoryName": "娱乐",
+    "visitCount": 137,
+    "articleTitle": "测试分类3"
+  },
+  {
+    "id": 32,
+    "categoryName": "分类",
+    "visitCount": 15,
+    "articleTitle": "测试文章"
+  },
+  { "id": 40, "categoryName": "生活", "visitCount": 11, "articleTitle": "测试" }
+]

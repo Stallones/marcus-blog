@@ -1,73 +1,84 @@
 <script setup lang="ts">
 import { getRecommendArticleList } from "@/apis/home";
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 // Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { useServiceStore } from "@/store/modules/service";
 
-const recommendArticles = ref<any[]>([])
+const recommendArticles = ref<any[]>([]);
 
-const modules = ref([Navigation,Pagination,Autoplay]);
+const modules = ref([Navigation, Pagination, Autoplay]);
 
-function loadContent(){
-  getRecommendArticleList().then((res: any) => {
-    // 过滤内容
-    res.data = res.data.map((item: any) => {
-      item.articleContent = item.articleContent.replace(/[*#>`~\-\\[\]()\s]|(\n\n)/g, '')
-      // 提取前 50 个字符
-      item.articleContent = item.articleContent.substring(0, 25) + '...';
-      return item;
+const serviceMode = useServiceStore().serviceMode;
+
+function loadContent() {
+  // if (serviceMode === "on") {
+    getRecommendArticleList().then((res: any) => {
+      // 过滤内容
+      res.data = res.data.map((item: any) => {
+        item.articleContent = item.articleContent.replace(
+          /[*#>`~\-\\[\]()\s]|(\n\n)/g,
+          ""
+        );
+        // 提取前 50 个字符
+        item.articleContent = item.articleContent.substring(0, 25) + "...";
+        return item;
+      });
+      recommendArticles.value = res.data;
     });
-    recommendArticles.value = res.data
-  })
+  // }
 }
-
 </script>
 
 <template>
-  <div>
-    <el-divider border-style="dashed" content-position="left">
-      <div class="flex items-center">
-        <SvgIcon name="recommend" color="#409EFF" class="icon"/>
-        <span class="ml-[5px]">推荐</span>
-      </div>
-    </el-divider>
-  </div>
-  <div  v-view-request="{ callback: loadContent }">
-    <swiper class="h-[200px] recommend"
-            loop
-            navigation
-            :pagination="{ clickable: true }"
-            :autoplay="{ delay: 2500 }"
-            :modules="modules"
-            v-if="recommendArticles.length > 0"
-    >
-      <swiper-slide v-for="recommendArticle in recommendArticles" :key="recommendArticle.id"
-                    @click="$router.push(`/article/${recommendArticle.id}`)">
-        <div class="item_text">
-          <div style="font-size: 30px">
-            {{ recommendArticle.articleTitle }}
-          </div>
-          <div style="font-size: 15px">
-            {{ recommendArticle.createTime }}
-          </div>
-          <div style="font-size: 18px">
-            {{ recommendArticle.articleContent }}
-          </div>
+  <div v-if="serviceMode === 'on'" class="recommend-article-container">
+    <div>
+      <el-divider border-style="dashed" content-position="left">
+        <div class="flex items-center">
+          <SvgIcon name="recommend" color="#409EFF" class="icon" />
+          <span class="ml-[5px]">推荐</span>
         </div>
-        <el-image :src="recommendArticle.articleCover"/>
-      </swiper-slide>
-      <div class="swiper-pagination"></div>
-    </swiper>
+      </el-divider>
+    </div>
+    <div v-view-request="{ callback: loadContent }">
+      <swiper
+        class="h-[200px] recommend"
+        loop
+        navigation
+        :pagination="{ clickable: true }"
+        :autoplay="{ delay: 2500 }"
+        :modules="modules"
+        v-if="recommendArticles.length > 0"
+      >
+        <swiper-slide
+          v-for="recommendArticle in recommendArticles"
+          :key="recommendArticle.id"
+          @click="$router.push(`/article/${recommendArticle.id}`)"
+        >
+          <div class="item_text">
+            <div style="font-size: 30px">
+              {{ recommendArticle.articleTitle }}
+            </div>
+            <div style="font-size: 15px">
+              {{ recommendArticle.createTime }}
+            </div>
+            <div style="font-size: 18px">
+              {{ recommendArticle.articleContent }}
+            </div>
+          </div>
+          <el-image :src="recommendArticle.articleCover" />
+        </swiper-slide>
+        <div class="swiper-pagination"></div>
+      </swiper>
+    </div>
+    <el-skeleton v-if="recommendArticles.length == 0" :rows="5" animated />
   </div>
-  <el-skeleton v-if="recommendArticles.length == 0" :rows="5" animated />
 </template>
 
 <style scoped lang="scss">
-
-
 .recommend {
   border-radius: $border-radius;
 

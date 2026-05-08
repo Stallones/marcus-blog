@@ -17,7 +17,7 @@
     <div>
       <ElectronicClocks/>
     </div>
-    <div>
+    <div v-if="showRandom">
       <RandomArticle/>
     </div>
     <div>
@@ -56,8 +56,13 @@ import {ref, onMounted} from 'vue'
 import {getSoup} from "@/apis/thirdParty";
 import useWebsiteStore from "@/store/modules/website.ts";
 import {ElMessageBox} from "element-plus";
+import { useServiceStore } from '@/store/modules/service';
 
 const useWebsite = useWebsiteStore()
+const isServiceAvailable = useServiceStore().isServiceAvailable
+const showRandom = ref(false)
+//randomArticle展示
+showRandom.value = isServiceAvailable
 
 const differenceInDays = ref(0)
 getDifferenceInDays()
@@ -74,7 +79,7 @@ watch(() => useWebsite.webInfo?.startTime, () => {
 function getDifferenceInDays() {
   // 计算运行时长
   // 假设 startTime 是一个表示开始时间的 Date 对象
-  let startTime = new Date(useWebsite.webInfo?.startTime); // 替换为你实际的开始时间
+  let startTime = new Date(useWebsite.webInfo?.startTime ?? '');
   // 获取当前时间
   let now = new Date();
   // 计算两个日期之间的差值（以毫秒为单位）

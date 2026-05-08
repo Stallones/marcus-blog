@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "categoryName": "生活",
+    "articleCount": 1,
+    "createTime": "2023-10-15 02:03:42",
+    "updateTime": "2023-10-15 02:03:45"
+  },
+  {
+    "id": 2,
+    "categoryName": "技术",
+    "articleCount": 2,
+    "createTime": "2023-10-15 02:03:53",
+    "updateTime": "2023-10-15 02:03:56"
+  },
+  {
+    "id": 3,
+    "categoryName": "娱乐",
+    "articleCount": 1,
+    "createTime": "2023-10-15 02:04:04",
+    "updateTime": "2023-10-15 02:04:06"
+  },
+  {
+    "id": 4,
+    "categoryName": "分类",
+    "articleCount": 1,
+    "createTime": "2024-01-04 11:23:27",
+    "updateTime": "2024-01-04 11:23:27"
+  }
+]

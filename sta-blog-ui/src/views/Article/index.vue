@@ -1,19 +1,23 @@
-
 <template>
-  <div style="padding-top: 50px;"></div>
+  <div style="padding-top: 50px"></div>
   <div v-show="!isReadingMode">
     <Main is-side-bar>
       <template #header>
-        <Header/>
+        <Header />
       </template>
       <template #content>
         <div class="progress"></div>
         <div class="p-1">
-          <div class="head_title" :style="`background-image: url('${articleDetail.articleCover}')`">
+          <div
+            class="head_title"
+            :style="`background-image: url('${articleDetail.articleCover}')`"
+          >
             <div class="head_title_text">
               <div class="classify">
                 <div>{{ articleDetail.categoryName }}</div>
-                <div class="tag" v-for="tag in articleDetail.tags"># {{ tag.tagName }}</div>
+                <div class="tag" v-for="tag in articleDetail.tags">
+                  # {{ tag.tagName }}
+                </div>
               </div>
               <div class="title">{{ articleDetail.articleTitle }}</div>
               <div class="statistics">
@@ -34,11 +38,15 @@
           <div>
             <!-- 富文本预览 -->
             <div>
-              <MdPreview :editorId="id" :theme="mode" :modelValue="articleDetail.articleContent"
-                         :on-html-changed="mdHtml"/>
+              <MdPreview
+                :editorId="id"
+                :theme="mode"
+                :modelValue="articleDetail.articleContent"
+                :on-html-changed="mdHtml"
+              />
             </div>
             <el-divider border-style="dashed" content-position="left">
-              <div style="display: flex;align-items: center">
+              <div style="display: flex; align-items: center">
                 <svg-icon name="author_statement"></svg-icon>
                 <span style="margin-left: 0.5em">声明</span>
               </div>
@@ -47,13 +55,18 @@
             <div class="copyright">
               <div class="author">
                 <svg-icon name="article_author"></svg-icon>
-                <strong>本文作者： {{ websiteStore.webInfo?.webmasterName }}</strong>
+                <strong
+                  >本文作者： {{ websiteStore.webInfo?.webmasterName }}</strong
+                >
               </div>
               <div class="link">
                 <svg-icon name="author_link"></svg-icon>
                 <strong>本文链接： </strong>
-                <a class="copyright_a"
-                   :href="env.VITE_FRONTEND_URL + $route.path">{{ env.VITE_FRONTEND_URL + $route.path }}</a>
+                <a
+                  class="copyright_a"
+                  :href="env.VITE_FRONTEND_URL + $route.path"
+                  >{{ env.VITE_FRONTEND_URL + $route.path }}</a
+                >
               </div>
               <div class="license">
                 <div>
@@ -61,65 +74,67 @@
                   <strong>版权声明： </strong>
                 </div>
                 <div class="license_text">
-                  本站所有文章除特别声明外，均采用
-                  &nbsp;
-                  <a class="copyright_a" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
-                     target="_blank">
+                  本站所有文章除特别声明外，均采用 &nbsp;
+                  <a
+                    class="copyright_a"
+                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
+                    target="_blank"
+                  >
                     CC BY-NC-SA 4.0
-                  </a> &nbsp;
-                  许可协议。转载请注明文章出处！
+                  </a>
+                  &nbsp; 许可协议。转载请注明文章出处！
                 </div>
               </div>
             </div>
           </div>
           <!-- 尾部标签与点赞收藏分享 -->
-          <div style="display: flex;justify-content: space-between">
-            <div class="tag">
+          <div style="display: flex; justify-content: space-between">
+            <div v-if="showTag" class="tag">
               <template v-for="tag in articleDetail.tags" :key="tag.id">
-                <div @click="$router.push(`/tags/${tag.id}`)"># {{ tag.tagName }}</div>
+                <div @click="$router.push(`/tags/${tag.id}`)">
+                  # {{ tag.tagName }}
+                </div>
               </template>
             </div>
-            <div class="like">
+            <div v-if="showLikFav" class="like">
               <div @click="likeBtn(articleDetail)">
-                <SvgIcon v-show="!like" name="like"/>
-                <SvgIcon v-show="like" name="like-selected"/>
+                <SvgIcon v-show="!like" name="like" />
+                <SvgIcon v-show="like" name="like-selected" />
                 <span>{{ articleDetail.likeCount }}</span>
               </div>
-              <div @click="collectionBtn(articleDetail)">
-                <SvgIcon v-show="!collection" name="collection"/>
-                <SvgIcon v-show="collection" name="collection-selected"/>
+              <div v-if="showLikFav" @click="collectionBtn(articleDetail)">
+                <SvgIcon v-show="!collection" name="collection" />
+                <SvgIcon v-show="collection" name="collection-selected" />
                 <span>{{ articleDetail.favoriteCount }}</span>
               </div>
               <div @click="copyToClipboard">
-                <SvgIcon name="share"/>
+                <SvgIcon name="share" />
                 <span>分享</span>
               </div>
             </div>
           </div>
-          <div>
-            <div class="tag" style="display: flex;justify-content: left;">
-              <div @click="$router.push(`/category/${articleDetail.categoryId}`)">{{ articleDetail.categoryName }}</div>
+          <div v-if="showTag">
+            <div class="tag" style="display: flex; justify-content: left">
+              <div
+                @click="$router.push(`/category/${articleDetail.categoryId}`)"
+              >
+                {{ articleDetail.categoryName }}
+              </div>
             </div>
           </div>
           <!-- 打赏 -->
           <div class="tipping">
-
-            <el-tooltip
-                class="box-item"
-                effect="light"
-                placement="top"
-            >
+            <el-tooltip class="box-item" effect="light" placement="top">
               <template #content>
                 <div class="qrCode">
                   <div>
                     支付宝
-                    <el-image
-                        src="https://image.kuailemao.xyz/blog/pay/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98%E4%BA%8C%E7%BB%B4%E7%A0%81_.png"/>
+                    <el-image :src="payQr" />
                   </div>
                 </div>
               </template>
               <div>
-                <svg-icon name="gift"/>
+                <svg-icon name="gift" />
                 <span class="max-[540px]:hidden">ヾ(≧▽≦*)o！</span>
               </div>
             </el-tooltip>
@@ -129,7 +144,11 @@
             <!-- 上一篇 -->
             <div>
               <div v-if="articleDetail.preArticleId > 0">
-                <el-link @click="$router.push(`/article/${articleDetail.preArticleId}`)">
+                <el-link
+                  @click="
+                    $router.push(`/article/${articleDetail.preArticleId}`)
+                  "
+                >
                   上一篇：{{ articleDetail.preArticleTitle }}
                 </el-link>
               </div>
@@ -137,50 +156,71 @@
             <!-- 下一篇 -->
             <div>
               <div v-if="articleDetail.nextArticleId > 0">
-                <el-link @click="$router.push(`/article/${articleDetail.nextArticleId}`)">
+                <el-link
+                  @click="
+                    $router.push(`/article/${articleDetail.nextArticleId}`)
+                  "
+                >
                   下一篇：{{ articleDetail.nextArticleTitle }}
                 </el-link>
               </div>
             </div>
           </div>
           <!-- 用户评论 -->
-          <Comment :type="1" :like-type="2" :author-id="articleDetail.userId" :type-id="articleDetail.id"
-                   v-if="loading"/>
+          <Comment
+            :server-on="isServiceAvailable"
+            :type="1"
+            :like-type="2"
+            :author-id="articleDetail.userId"
+            :type-id="Number(articleDetail.id)"
+          />
         </div>
       </template>
-      <template #information >      
-        <CardInfo/>
+      <template #information>
+        <CardInfo />
         <div class="sticky_layout">
-          <ElectronicClocks/>
+          <ElectronicClocks />
           <div class="mt-[1.5em]">
-            <DirectoryCard/>
+            <DirectoryCard />
           </div>
 
-          <div v-if="articleDetail.categoryId !== ''">
-            <RandomArticle :categoryId="articleDetail.categoryId.toString()" :articleId="route.params.id"
-                           title="相关推荐"
-                           prefix-icon="query_tasks"/>
+          <div v-if="showRandom">
+            <RandomArticle
+              :categoryId="articleDetail.categoryId.toString()"
+              :articleId="route.params.id as string || undefined"
+              title="相关推荐"
+              prefix-icon="query_tasks"
+            />
           </div>
         </div>
-        
       </template>
       <template #footer>
-        <Footer/>
+        <Footer />
       </template>
     </Main>
   </div>
   <div v-show="isReadingMode" class="bg-white dark:bg-gray-800">
     <!-- 退出按钮 -->
-    <div @click="isReadingMode = false"
-         class="z-10 w-[50px] h-[50px] bg-gray-200 hover:bg-gray-300 fixed top-[2em] right-[1em] lg:right-[5em] rounded flex items-center justify-center duration-300 cursor-pointer">
-      <svg-icon name="exit_icon" style="width: 25px;height: 25px;"/>
+    <div
+      @click="isReadingMode = false"
+      class="z-10 w-[50px] h-[50px] bg-gray-200 hover:bg-gray-300 fixed top-[2em] right-[1em] lg:right-[5em] rounded flex items-center justify-center duration-300 cursor-pointer"
+    >
+      <svg-icon name="exit_icon" style="width: 25px; height: 25px" />
     </div>
-    <div class="sm:px-1 md:px-[5rem] lg:px-[10rem] xl:px-[15rem] py-3" style="transition: all .5s ease">
-      <div class="head_title" :style="`background-image: url('${articleDetail.articleCover}')`">
+    <div
+      class="sm:px-1 md:px-[5rem] lg:px-[10rem] xl:px-[15rem] py-3"
+      style="transition: all 0.5s ease"
+    >
+      <div
+        class="head_title"
+        :style="`background-image: url('${articleDetail.articleCover}')`"
+      >
         <div class="head_title_text">
           <div class="classify">
             <div>{{ articleDetail.categoryName }}</div>
-            <div class="tag" v-for="tag in articleDetail.tags"># {{ tag.tagName }}</div>
+            <div class="tag" v-for="tag in articleDetail.tags">
+              # {{ tag.tagName }}
+            </div>
           </div>
           <div class="title">{{ articleDetail.articleTitle }}</div>
           <div class="statistics">
@@ -201,10 +241,15 @@
       <div>
         <!-- 富文本预览 -->
         <div>
-          <MdPreview :editorId="id" :theme="mode" :modelValue="articleDetail.articleContent" :on-html-changed="mdHtml"/>
+          <MdPreview
+            :editorId="id"
+            :theme="mode"
+            :modelValue="articleDetail.articleContent"
+            :on-html-changed="mdHtml"
+          />
         </div>
         <el-divider border-style="dashed" content-position="left">
-          <div style="display: flex;align-items: center">
+          <div style="display: flex; align-items: center">
             <svg-icon name="author_statement"></svg-icon>
             <span style="margin-left: 0.5em">声明</span>
           </div>
@@ -213,13 +258,18 @@
         <div class="copyright">
           <div class="author">
             <svg-icon name="article_author"></svg-icon>
-            <strong>本文作者： {{ websiteStore.webInfo?.webmasterName }}</strong>
+            <strong
+              >本文作者： {{ websiteStore.webInfo?.webmasterName }}</strong
+            >
           </div>
           <div class="link">
             <svg-icon name="author_link"></svg-icon>
             <strong>本文链接： </strong>
-            <a class="copyright_a"
-               :href="env.VITE_FRONTEND_URL + $route.path">{{ env.VITE_FRONTEND_URL + $route.path }}</a>
+            <a
+              class="copyright_a"
+              :href="env.VITE_FRONTEND_URL + $route.path"
+              >{{ env.VITE_FRONTEND_URL + $route.path }}</a
+            >
           </div>
           <div class="license">
             <div>
@@ -227,65 +277,65 @@
               <strong>版权声明： </strong>
             </div>
             <div class="license_text">
-              本站所有文章除特别声明外，均采用
-              &nbsp;
-              <a class="copyright_a" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
-                 target="_blank">
+              本站所有文章除特别声明外，均采用 &nbsp;
+              <a
+                class="copyright_a"
+                href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
+                target="_blank"
+              >
                 CC BY-NC-SA 4.0
-              </a> &nbsp;
-              许可协议。转载请注明文章出处！
+              </a>
+              &nbsp; 许可协议。转载请注明文章出处！
             </div>
           </div>
         </div>
       </div>
       <!-- 尾部标签与点赞收藏分享 -->
-      <div style="display: flex;justify-content: space-between">
-        <div class="tag">
+      <div style="display: flex; justify-content: space-between">
+        <div v-if="showTag" class="tag">
           <template v-for="tag in articleDetail.tags" :key="tag.id">
-            <div @click="$router.push(`/tags/${tag.id}`)"># {{ tag.tagName }}</div>
+            <div @click="$router.push(`/tags/${tag.id}`)">
+              # {{ tag.tagName }}
+            </div>
           </template>
         </div>
         <div class="like">
-          <div @click="likeBtn(articleDetail)">
-            <SvgIcon v-show="!like" name="like"/>
-            <SvgIcon v-show="like" name="like-selected"/>
+          <div v-if="showLikFav" @click="likeBtn(articleDetail)">
+            <SvgIcon v-show="!like" name="like" />
+            <SvgIcon v-show="like" name="like-selected" />
             <span>{{ articleDetail.likeCount }}</span>
           </div>
-          <div @click="collectionBtn(articleDetail)">
-            <SvgIcon v-show="!collection" name="collection"/>
-            <SvgIcon v-show="collection" name="collection-selected"/>
+          <div v-if="showLikFav" @click="collectionBtn(articleDetail)">
+            <SvgIcon v-show="!collection" name="collection" />
+            <SvgIcon v-show="collection" name="collection-selected" />
             <span>{{ articleDetail.favoriteCount }}</span>
           </div>
           <div @click="copyToClipboard">
-            <SvgIcon name="share"/>
+            <SvgIcon name="share" />
             <span>分享</span>
           </div>
         </div>
       </div>
-      <div>
-        <div class="tag" style="display: flex;justify-content: left;">
-          <div @click="$router.push(`/category/${articleDetail.categoryId}`)">{{ articleDetail.categoryName }}</div>
+      <div v-if="showTag">
+        <div class="tag" style="display: flex; justify-content: left">
+          <div @click="$router.push(`/category/${articleDetail.categoryId}`)">
+            {{ articleDetail.categoryName }}
+          </div>
         </div>
       </div>
       <!-- 打赏 -->
       <div class="tipping">
-
-        <el-tooltip
-            class="box-item"
-            effect="light"
-            placement="top"
-        >
+        <el-tooltip class="box-item" effect="light" placement="top">
           <template #content>
             <div class="qrCode">
               <div>
                 支付宝
-                <el-image
-                    src="https://image.kuailemao.xyz/blog/pay/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98%E4%BA%8C%E7%BB%B4%E7%A0%81_.png"/>
+                <el-image :src="payQr" />
               </div>
             </div>
           </template>
           <div>
-            <svg-icon name="gift"/>
+            <svg-icon name="gift" />
             <span class="max-[540px]:hidden">ヾ(≧▽≦*)o！</span>
           </div>
         </el-tooltip>
@@ -295,7 +345,9 @@
         <!-- 上一篇 -->
         <div>
           <div v-if="articleDetail.preArticleId > 0">
-            <el-link @click="$router.push(`/article/${articleDetail.preArticleId}`)">
+            <el-link
+              @click="$router.push(`/article/${articleDetail.preArticleId}`)"
+            >
               上一篇：{{ articleDetail.preArticleTitle }}
             </el-link>
           </div>
@@ -303,7 +355,9 @@
         <!-- 下一篇 -->
         <div>
           <div v-if="articleDetail.nextArticleId > 0">
-            <el-link @click="$router.push(`/article/${articleDetail.nextArticleId}`)">
+            <el-link
+              @click="$router.push(`/article/${articleDetail.nextArticleId}`)"
+            >
               下一篇：{{ articleDetail.nextArticleTitle }}
             </el-link>
           </div>
@@ -311,143 +365,180 @@
       </div>
     </div>
   </div>
-  <MobileDirectoryCard :id="id" :scroll-element="scrollElement" :is-show-move-catalog="isShowMoveCatalog"
-                       @update:isShowMoveCatalog="(value) =>  isShowMoveCatalog = value"/>
-  <BottomRightLayout v-show="!isReadingMode" to-top scroll-percentage reading-mode to-comment
-                     @ReadingMode="ReadingModeFunc">
+  <MobileDirectoryCard
+    :id="id"
+    :scroll-element="scrollElement"
+    :is-show-move-catalog="isShowMoveCatalog"
+    @update:isShowMoveCatalog="(value) => (isShowMoveCatalog = value)"
+  />
+  <BottomRightLayout
+    v-show="!isReadingMode"
+    to-top
+    scroll-percentage
+    reading-mode
+    to-comment
+    @ReadingMode="ReadingModeFunc"
+  >
     <template #scroll_percentage>
       {{ progressY }}
     </template>
   </BottomRightLayout>
   <div v-show="!isReadingMode">
     <el-affix position="bottom" :offset="200">
-      <el-tooltip
-          effect="light"
-          content="显示目录"
-          placement="right"
-      >
+      <el-tooltip effect="light" content="显示目录" placement="right">
         <div class="move_catalog_btn" @click="isShowMoveCatalog = true">
-          <svg-icon name="directory" class="move_catalog_svg" width="30" height="30"/>
+          <svg-icon
+            name="directory"
+            class="move_catalog_svg"
+            width="30"
+            height="30"
+          />
         </div>
       </el-tooltip>
     </el-affix>
   </div>
 </template>
 
-
 <script setup lang="ts">
-import {ref} from 'vue'
-import {MdPreview} from 'md-editor-v3';
-import 'md-editor-v3/lib/preview.css';
-import {
-  addArticleVisit,
-  getArticleDetail
-} from "@/apis/article";
-import {cancelFavorite, userFavorite, isFavorite} from '@/apis/favorite'
-import {cancelLike, isLike, userLike} from '@/apis/like';
+import { ref } from "vue";
+import { MdPreview } from "md-editor-v3";
+import "md-editor-v3/lib/preview.css";
+import { addArticleVisit, getArticleDetail } from "@/apis/article";
+import { cancelFavorite, userFavorite, isFavorite } from "@/apis/favorite";
+import { cancelLike, isLike, userLike } from "@/apis/like";
 import DirectoryCard from "./DirectoryCard/index.vue";
-import {ElMessage, ElMessageBox} from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import router from "@/router";
 import useWebsiteStore from "@/store/modules/website.ts";
-import {useColorMode, useTitle} from "@vueuse/core";
+import { useColorMode, useTitle } from "@vueuse/core";
 import MobileDirectoryCard from "./MobileDirectoryCard/index.vue";
-import {throttle} from "@/utils/optimize.ts";
-import {ARTICLE_VISIT_PREFIX} from "@/const/Visits";
+import { throttle } from "@/utils/optimize.ts";
+import { ARTICLE_VISIT_PREFIX } from "@/const/Visits";
+import { useServiceStore } from "@/store/modules/service";
+import payQr from "@/assets/pay/a77178025b790601a8a0a8361718b148.png";
 
 // .env
 const env = import.meta.env;
 
-const websiteStore = useWebsiteStore()
-const mode = useColorMode()
-const id = 'preview-only';
+const websiteStore = useWebsiteStore();
+const isServiceAvailable = useServiceStore().isServiceAvailable;
+const colorMode = useColorMode();
+const mode = computed(() =>
+  colorMode.value === "auto" ? "light" : colorMode.value
+);
+
+const id = "preview-only";
 const scrollElement = document.documentElement;
-const isShowMoveCatalog = ref(false)
+const isShowMoveCatalog = ref(false);
 
 const articleDetail = ref({
-  articleCover: '',
-  articleTitle: '',
-  articleContent: undefined,
-  categoryName: '',
-  categoryId: '',
-  tags: [],
+  articleCover: "",
+  articleTitle: "",
+  articleContent: undefined as string | undefined,
+  categoryName: "",
+  categoryId: "",
+  tags: [] as { id: number; tagName: string }[],
   visitCount: 0,
   commentCount: 0,
   likeCount: 0,
   favoriteCount: 0,
-  createTime: '',
-  updateTime: '',
+  createTime: "",
+  updateTime: "",
   userId: 0,
-  id: "0"
-})
+  id: "0",
+  preArticleId: 0,
+  preArticleTitle: "",
+  nextArticleId: 0,
+  nextArticleTitle: "",
+});
 
 const route = useRoute();
 
 // 是否加载
-const loading = ref(false)
+const showTag = ref(false); //标签
+const showLikFav = ref(false); //点赞收藏
+const showComment = ref(false); //评论区
+const showRandom = ref(false); //随机文章评论区
 
 // 字数 统计
-const countMd = ref(0)
+const countMd = ref(0);
 
 // 监听路由变化
-watch(() => route.params.id, () => {
-  getArticleDetailById()
-})
-
+watch(
+  () => route.params.id,
+  () => {
+    getArticleDetailById();
+  }
+);
 
 onMounted(async () => {
-  await getArticleDetailById()
-})
-
+  await getArticleDetailById();
+});
 
 async function getArticleDetailById() {
-  getArticleDetail(route.params.id).then(res => {
+  getArticleDetail(route.params.id).then((res) => {
     if (!res.data) {
       ElMessage.warning({
-        message: '文章不存在',
-      })
+        message: "文章不存在",
+      });
       // 跳转回去
-      router.push({path: '/'})
-      return
+      router.push({ path: "/" });
+      return;
     }
     // 设置title
-    useTitle(res.data.articleTitle)
+    useTitle(res.data.title);
     if (route.params.id) {
       if (!sessionStorage.getItem(ARTICLE_VISIT_PREFIX + route.params.id)) {
         // 避免重复刷新
-        sessionStorage.setItem(ARTICLE_VISIT_PREFIX + route.params.id, route.params.id as string)
-        addArticleVisit(route.params.id as string)
+        sessionStorage.setItem(
+          ARTICLE_VISIT_PREFIX + route.params.id,
+          route.params.id as string
+        );
+        //服务可用
+        if (isServiceAvailable) addArticleVisit(route.params.id as string);
       }
     }
     // 时间去掉时分秒
-    res.data.createTime = res.data.createTime.split(' ')[0]
-    res.data.updateTime = res.data.updateTime.split(' ')[0]
-    articleDetail.value = res.data
-    loading.value = true
-    // 收藏
-    isFavoriteFunc()
-    // 点赞
-    isLikeFunc()
-  })
+    res.data.createTime = res.data.createTime?.split(" ")[0];
+    res.data.updateTime = res.data.updateTime?.split(" ")[0];
+    articleDetail.value = res.data as any;
+    showTag.value = true;
+    //服务可用
+    if (isServiceAvailable) {
+      // 控制 随机文章
+      showRandom.value = true && articleDetail.value.categoryId !== "";
+      //控制 尾部标签与点赞收藏分享、用户评论的展示
+      showLikFav.value = true;
+      showComment.value = true;
+      // 收藏
+      isFavoriteFunc();
+      // 点赞
+      isLikeFunc();
+    }
+  });
 }
 
 function mdHtml(htmlText: string) {
   // 获取html中的所有文字，去掉空格与标点符号
-  const text = htmlText.replace(/<[^>]+>/g, "").replace(/[\r\n]/g, "").replace(/[ ]/g, "").replace(/[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+/g, "")
-  countMd.value = <number>countWords(text.length)
+  const text = htmlText
+    .replace(/<[^>]+>/g, "")
+    .replace(/[\r\n]/g, "")
+    .replace(/[ ]/g, "")
+    .replace(/[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？、~@#￥%……&*（）]+/g, "");
+  countMd.value = <number>countWords(text.length);
 }
 
 // 字数统计
 function countWords(count: number) {
   if (count <= 1000) {
-    return count
+    return count;
   } else {
-    let counts = (count / 1000);
+    let counts = count / 1000;
     // 留小数点一位数
     counts = Number(counts.toFixed(1));
-    return counts + 'k';
+    return counts + "k";
   }
 }
-
 
 // 分享
 const copyToClipboard = async () => {
@@ -459,133 +550,139 @@ const copyToClipboard = async () => {
   } catch (error) {
     ElMessage.error("复制失败，请联系网站管理员");
   }
-}
+};
 
 // 公告
 function announcement() {
-  ElMessageBox.alert(`<pre>${websiteStore.webInfo?.sidebarAnnouncement}</pre>`, '公告', {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: '关闭',
-    closeOnPressEscape: true,
-    dangerouslyUseHTMLString: true,
-  })
+  ElMessageBox.alert(
+    `<pre>${websiteStore.webInfo?.sidebarAnnouncement}</pre>`,
+    "公告",
+    {
+      // if you want to disable its autofocus
+      // autofocus: false,
+      confirmButtonText: "关闭",
+      closeOnPressEscape: true,
+      dangerouslyUseHTMLString: true,
+    }
+  );
 }
 
 // 收藏标记
-const collection = ref(false)
+const collection = ref(false);
 // 点赞标记
-const like = ref(false)
+const like = ref(false);
 
-const collectionBtn = (detail: object) => {
-
+const collectionBtn = (detail: typeof articleDetail.value) => {
   if (collection.value) {
     // 取消收藏
-    cancelFavorite(1, articleDetail.value.id).then(res => {
+    cancelFavorite(1, articleDetail.value.id).then((res: any) => {
       if (res.code === 200) {
-        detail.favoriteCount -= 1
-        collection.value = false
+        detail.favoriteCount -= 1;
+        collection.value = false;
         ElMessage.info("取消收藏");
       } else {
         ElMessage.error(res.msg);
       }
-    })
+    });
   } else {
     // 收藏
-    userFavorite(1, articleDetail.value.id).then(res => {
+    userFavorite(1, articleDetail.value.id).then((res: any) => {
       if (res.code === 200) {
-        detail.favoriteCount += 1
-        collection.value = true
+        detail.favoriteCount += 1;
+        collection.value = true;
         ElMessage.success("收藏成功");
       } else {
         ElMessage.error(res.msg);
       }
-    })
+    });
   }
-}
+};
 
-function likeBtn(detail: object) {
+function likeBtn(detail: typeof articleDetail.value) {
   if (like.value) {
-    cancelLike(1, articleDetail.value.id).then(res => {
+    cancelLike(1, articleDetail.value.id).then((res: any) => {
       if (res.code === 200) {
-        detail.likeCount -= 1
-        like.value = false
+        detail.likeCount -= 1;
+        like.value = false;
         ElMessage.info("我会继续努力的");
       } else {
         ElMessage.error(res.msg);
       }
-    })
+    });
   } else {
-    userLike(1, articleDetail.value.id).then(res => {
+    userLike(1, articleDetail.value.id).then((res: any) => {
       if (res.code === 200) {
-        detail.likeCount += 1
-        like.value = true
+        detail.likeCount += 1;
+        like.value = true;
         ElMessage.success("感谢你的认可");
       } else {
         ElMessage.error(res.msg);
       }
-    })
+    });
   }
 }
 
 // 是否收藏
 function isFavoriteFunc() {
-  isFavorite(1, articleDetail.value.id).then(res => {
+  isFavorite(1, articleDetail.value.id).then((res: any) => {
     collection.value = res.data === true;
-  })
+  });
 }
 
 // 是否点赞
 function isLikeFunc() {
-  isLike(1, articleDetail.value.id).then(res => {
+  isLike(1, articleDetail.value.id).then((res: any) => {
     like.value = res.code === 200;
-  })
+  });
 }
 
-window.addEventListener("scroll", throttle(() => {
-  window.requestAnimationFrame(scrollWork)
-}, 40));
+window.addEventListener(
+  "scroll",
+  throttle(() => {
+    window.requestAnimationFrame(scrollWork);
+  }, 40)
+);
 
 // 页面滚动进度
-const progressY = ref('0%')
+const progressY = ref("0%");
 
 // 监听页面滚动进度条
 function scrollWork() {
   // 获取页面高度
-  let pageHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+  let pageHeight =
+    document.documentElement.scrollHeight || document.body.scrollHeight;
   // 获取可视区域高度
-  let screenHeight = document.documentElement.clientHeight || document.body.clientHeight;
+  let screenHeight =
+    document.documentElement.clientHeight || document.body.clientHeight;
   // 滚动高度
   let scrollHeight = pageHeight - screenHeight;
   // 获取滚动距离
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
   // 计算进度
-  let progress: any = document.querySelector('.progress');
+  let progress: any = document.querySelector(".progress");
   // 设置进度
   if (progress) {
     // 仅当元素存在时设置宽度
-    progress.style.width = (scrollTop / scrollHeight) * 100 + '%';
+    progress.style.width = (scrollTop / scrollHeight) * 100 + "%";
   }
-  progressY.value = Math.floor((scrollTop / scrollHeight) * 100) + '%';
+  progressY.value = Math.floor((scrollTop / scrollHeight) * 100) + "%";
 }
 
-const isReadingMode = ref(false)
+const isReadingMode = ref(false);
 
 // 开启阅读模式a
 function ReadingModeFunc() {
   isReadingMode.value = !isReadingMode.value;
 }
-
 </script>
 
 <style scoped lang="scss">
-@use '@/styles/mixin' as *;
-
+@use "@/styles/mixin" as *;
 
 .sticky_layout {
   top: 60px;
   position: sticky;
-  transition: top .3s;
+  transition: top 0.3s;
 }
 
 // 移动端目录按钮
@@ -605,6 +702,7 @@ function ReadingModeFunc() {
   justify-content: center;
   align-items: center;
   visibility: hidden;
+
   @media screen and (max-width: 910px) {
     visibility: visible;
     right: 3em;
@@ -622,7 +720,6 @@ function ReadingModeFunc() {
       height: 25px !important;
     }
   }
-
 }
 
 :deep(.el-drawer__header) {
@@ -681,6 +778,7 @@ function ReadingModeFunc() {
 
     & > div:nth-child(1) {
       display: flex;
+
       @media screen and (max-width: 910px) {
         width: 100%;
       }
@@ -691,8 +789,9 @@ function ReadingModeFunc() {
     }
   }
 
-  .license_text{
+  .license_text {
     display: flex;
+
     @media screen and (max-width: 910px) {
       // 左对齐
       width: 100%;
@@ -720,9 +819,7 @@ function ReadingModeFunc() {
       margin: 0 0.5rem;
       font-weight: bold;
     }
-
   }
-
 }
 
 // 文章底部标签
@@ -789,7 +886,7 @@ function ReadingModeFunc() {
   div {
     @include flex;
     color: white;
-    background-color: #C0A46B;
+    background-color: #c0a46b;
     width: 20%;
     border: 1px solid var(--el-border-color);
     height: 2.5em;
@@ -847,13 +944,18 @@ function ReadingModeFunc() {
   // 文章正文字体颜色
   .md-editor-preview {
     color: var(--el-text-color-regular);
-    
+
     // 标题字体颜色
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       color: var(--el-text-color-regular);
     }
   }
-  
+
   @media screen and (max-width: 910px) {
     padding: 0.2rem;
   }
@@ -872,6 +974,7 @@ function ReadingModeFunc() {
 
 .pre-text {
   text-align: left;
-  overflow: auto; /* 如果内容超出了元素盒子的宽度，显示滚动条 */
+  overflow: auto;
+  /* 如果内容超出了元素盒子的宽度，显示滚动条 */
 }
 </style>

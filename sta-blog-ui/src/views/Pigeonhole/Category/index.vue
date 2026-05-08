@@ -188,6 +188,10 @@ function getArticle(id: string | string[]) {
         opacity: 1;
         box-shadow: 0 0 0.5rem 0.1rem #ccc;
         cursor: pointer;
+        //白条动画
+        div:first-child::after {
+          width: 100%;
+        }
       }
 
       & div:first-child {
@@ -210,10 +214,6 @@ function getArticle(id: string | string[]) {
           // 蓝紫色渐变色背景
           background: white;
           transition: width 0.8s ease; /* 过渡动画效果 */
-        }
-
-        &:hover::after {
-          width: 100%;
         }
       }
 

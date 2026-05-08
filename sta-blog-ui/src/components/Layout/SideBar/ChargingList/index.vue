@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import Card from "@/components/Card/index.vue";
+import payQr from "@/assets/pay/a77178025b790601a8a0a8361718b148.png";
 
 const chargingList = ref([
   {
@@ -92,13 +93,13 @@ const chargingList = ref([
         </div>
       </div>
       <div class="text-left text-[12px] mt-2 font-bold">
-<!--        <span class="text-[#999]">为项目充电(支付宝)：</span>-->
-<!--        <div class="flex justify-center items-center">-->
-<!--          <div style="width: 150px;height: 150px;margin-top: 1rem">-->
-<!--            <el-image-->
-<!--                src="https://image.xyz/blog/pay/%E6%94%AF%E4%BB%98%E5%AE%9D%E6%94%AF%E4%BB%98%E4%BA%8C%E7%BB%B4%E7%A0%81_.png"/>-->
-<!--          </div>-->
-<!--        </div>-->
+       <span class="text-[#999]">为项目充电(支付宝)：</span>
+       <div class="flex justify-center items-center">
+         <div style="width: 150px;height: 150px;margin-top: 1rem">
+           <el-image
+               :src="payQr"/>
+         </div>
+       </div>
         <span class="text-[#999]">为项目充电：联系站长</span>
       </div>
     </Card>

@@ -11,8 +11,10 @@ import {logout, oauthLogin} from "@/apis/user"
 import {REMOVE_TOKEN, SET_TOKEN} from "@/utils/auth.ts"
 import {ElMessage} from "element-plus"
 import router from "@/router"
+import { useServiceStore } from '@/store/modules/service'
 
 const userStore = useUserStore()
+const isServiceAvailable = useServiceStore().isServiceAvailable
 const route = useRoute()
 // 日夜切换
 const mode = useColorMode()
@@ -110,7 +112,7 @@ function changeToggle({detail}) {
       <div class="search" @click="dialogVisible = true" style="margin-right: 2rem">
         <SvgIcon name="search" width="30" height="30" color="#409EFF" class="icon"/>
       </div>
-      <div class="user-info">
+      <div v-if="isServiceAvailable" class="user-info">
         <div v-if="userStore.userInfo == undefined">
           <el-tooltip
               class="box-item"

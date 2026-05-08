@@ -1,89 +1,111 @@
 <script setup lang="ts">
+import { getRandomArticle, getRelatedArticle } from "@/apis/home";
+import { useServiceStore } from "@/store/modules/service";
+import { ref, watch } from "vue";
 
-import {getRandomArticle, getRelatedArticle} from "@/apis/home";
-import {onMounted} from "vue";
+// const serviceMode = useServiceStore().serviceMode;
 
 const props = defineProps({
   title: {
     type: String,
-    default: '随机文章',
+    default: "随机文章",
   },
   prefixIcon: {
     type: String,
-    default: 'random_essay',
+    default: "random_essay",
   },
   // 分类id
   categoryId: {
     type: String,
-    default: '',
+    default: "",
   },
   // 文章id
   articleId: {
     type: String,
-    default: '',
-  }
+    default: "",
+  },
 });
 
-const randomArticles = ref([{
-  id: '',
-  articleTitle: '',
-  articleCover: '',
-  createTime: '',
-}])
+const randomArticles = ref([
+  {
+    id: "",
+    articleTitle: "",
+    articleCover: "",
+    createTime: "",
+  },
+]);
 
 function randomArticleBtn() {
-  imgRefresh.value = true
-  getRandomArticleList()
+  imgRefresh.value = true;
+  getRandomArticleList();
 }
 
-function getRandomArticleList(){
-  getRandomArticle().then(res => {
-    res.data = formatDate(res.data)
-    randomArticles.value = res.data
-  })
+function getRandomArticleList() {
+  getRandomArticle().then((res) => {
+    res.data = formatDate(res.data);
+    randomArticles.value = res.data;
+  });
 }
 
 // 监听参数变化
-watch(() => props.articleId, () => {
-  relatedRecommendBtn(props.categoryId, props.articleId)
-})
+watch(
+  () => props.articleId,
+  () => {
+    relatedRecommendBtn(props.categoryId, props.articleId);
+  }
+);
 
 // 相关推荐
 function relatedRecommendBtn(categoryId: string, articleId: string) {
-  getRelatedArticle(categoryId, articleId).then(res => {
-    res.data = formatDate(res.data)
-    randomArticles.value = res.data
-  })
+  getRelatedArticle(categoryId, articleId).then((res) => {
+    res.data = formatDate(res.data);
+    randomArticles.value = res.data;
+  });
 }
 
 // 去掉时分秒
 function formatDate(date: []) {
-  date.forEach((item:any) => {
-    item.createTime = item.createTime.split(' ')[0]
-  })
-  return date
+  date.forEach((item: any) => {
+    item.createTime = item.createTime.split(" ")[0];
+  });
+  return date;
 }
 
-const imgRefresh = ref(false)
+const imgRefresh = ref(false);
 
-function loadContent(){
+function loadContent() {
   if (props.title == "随机文章") {
-    getRandomArticleList()
+    getRandomArticleList();
   }
   if (props.title == "相关推荐") {
-    relatedRecommendBtn(props.categoryId, props.articleId)
+    relatedRecommendBtn(props.categoryId, props.articleId);
   }
 }
-
 </script>
 
 <template>
   <!-- 随机文章 -->
-  <Card :title="title" :prefix-icon="prefixIcon" :suffix-icon="title === '相关推荐' ? '' : 'rotate'" @isRotate="true"
-        :isScale="true" @invoke="randomArticleBtn" v-view-request="{ callback: loadContent }">
+  <Card
+    :title="title"
+    :prefix-icon="prefixIcon"
+    :suffix-icon="title === '相关推荐' ? '' : 'rotate'"
+    @isRotate="true"
+    :isScale="true"
+    @invoke="randomArticleBtn"
+    v-view-request="{ callback: loadContent }"
+  >
     <div class="random_container" v-for="randomArticle in randomArticles">
-      <div class="random_image" @click="$router.push('/article/'+randomArticle.id)">
-        <img v-if="randomArticle.articleCover" :src="imgRefresh ? randomArticle.articleCover: ''" :data-src="randomArticle.articleCover" v-lazy="true"  alt="文章封面"/>
+      <div
+        class="random_image"
+        @click="$router.push('/article/' + randomArticle.id)"
+      >
+        <img
+          v-if="randomArticle.articleCover"
+          :src="imgRefresh ? randomArticle.articleCover : ''"
+          :data-src="randomArticle.articleCover"
+          v-lazy="true"
+          alt="文章封面"
+        />
       </div>
       <div class="random_text" :key="randomArticle.id">
         <div>{{ randomArticle.articleTitle }}</div>

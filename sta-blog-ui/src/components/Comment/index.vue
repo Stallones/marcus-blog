@@ -1,37 +1,43 @@
 <script setup lang="ts">
-import {MdPreview} from 'md-editor-v3';
-import 'md-editor-v3/lib/preview.css';
-import EmojiPicker from './EmojiPicker.vue';
-import {heo} from "@/utils/O.o/heo.ts";
+import { MdPreview } from "md-editor-v3";
+import "md-editor-v3/lib/preview.css";
+import EmojiPicker from "./EmojiPicker.vue";
+import { heo } from "@/utils/O.o/heo.ts";
 
-import {
-  addComment,
-  getComment
-} from "@/apis/article";
-import {cancelLike, isLike, userLike} from '@/apis/like'
+import { addComment, getComment } from "@/apis/article";
+import { cancelLike, isLike, userLike } from "@/apis/like";
 import ChildComment from "./ChildComment.vue";
-import {ElMessage} from "element-plus";
-import {useColorMode} from "@vueuse/core";
+import { ElMessage } from "element-plus";
+import { useColorMode } from "@vueuse/core";
 
 const props = defineProps({
+  serverOn: {
+    type: Boolean,
+    default: false,
+  },
   authorId: {
     type: Number,
-    required: true
+    required: true,
   },
   typeId: {
     type: Number,
-    required: true
+    required: true,
   },
   // 是否显示头部添加框
   isShowHeader: {
     type: Boolean,
-    default: true
+    default: true,
   },
   // 评论类型
   type: Number,
   // 点赞类型
-  likeType: Number
-})
+  likeType: Number,
+});
+
+const placeholderText = ref("留下你的精彩评论吧！");
+if (props.serverOn === false) {
+  placeholderText.value = "服务离线，评论不可用";
+}
 
 // 输入框显示的内容
 const textarea = ref(``);
@@ -40,7 +46,7 @@ const preview = ref(``);
 // 文本框
 const myInput = ref();
 // 是否加载
-const isLoading = ref(false)
+const isLoading = ref(false);
 
 // 添加一个 ref 来跟踪当前活动的评论框
 const activeCommentId = ref(null);
@@ -54,7 +60,7 @@ function setActiveComment(id: number | null) {
 function handleParentEmojiButtonClick(event: Event) {
   event.stopPropagation();
   event.preventDefault();
-  
+
   // 关闭所有回复框
   if (comments.value) {
     comments.value.forEach((comment: any) => {
@@ -64,7 +70,7 @@ function handleParentEmojiButtonClick(event: Event) {
       }
     });
   }
-  
+
   // 重置活动评论框
   setActiveComment(null);
   // 聚焦到父评论输入框
@@ -77,7 +83,10 @@ function handleEmojiSelect(emoji: string) {
   if (!activeCommentId.value) {
     let start = myInput.value.selectionStart;
     let end = myInput.value.selectionEnd;
-    textarea.value = textarea.value.substring(0, start) + emoji + textarea.value.substring(end, textarea.value.length);
+    textarea.value =
+      textarea.value.substring(0, start) +
+      emoji +
+      textarea.value.substring(end, textarea.value.length);
     nextTick(() => {
       myInput.value.focus();
       myInput.value.selectionStart = start + emoji.length;
@@ -87,26 +96,29 @@ function handleEmojiSelect(emoji: string) {
 }
 
 // 获取选项卡div
-const comments = ref()
-const commentsTotal = ref(0)
+const comments = ref();
+const commentsTotal = ref(0);
 // 是否预览
-const isPreview = ref(false)
+const isPreview = ref(false);
 // 是否展示全部子评论
-const showAllChildComments = ref(false)
+const showAllChildComments = ref(false);
 // 查询评论数
-const pageSize = ref(2)
+const pageSize = ref(2);
 
-const mode = useColorMode()
+const mode = useColorMode();
 
 // 默认选中第一个
 onMounted(() => {
-  getComments(props.typeId, '1', String(pageSize.value))
-})
+  getComments(props.typeId, "1", String(pageSize.value));
+});
 
 // 用户预览
-watch(() => textarea.value, (value) => {
-  preview.value = parsingCommentsFunc(value);
-})
+watch(
+  () => textarea.value,
+  (value) => {
+    preview.value = parsingCommentsFunc(value);
+  }
+);
 
 // 解析评论
 function parsingComments(value: string) {
@@ -135,7 +147,10 @@ function parsingCommentsFunc(value: string) {
       const match = matches[i];
       if (heo[match]) {
         // 有，替换 heo[match]
-        protectedValue = protectedValue.replace(match, `<span><img src="${heo[match]}" width="24" height="24" alt="Ruyu-blog-[1231256151315612]" /></span>`);
+        protectedValue = protectedValue.replace(
+          match,
+          `<span><img src="${heo[match]}" width="24" height="24" alt="Ruyu-blog-[1231256151315612]" /></span>`
+        );
       }
     }
   }
@@ -151,30 +166,30 @@ function parsingCommentsFunc(value: string) {
 
 function handleComments(commentContent: object[]) {
   commentContent.forEach((item: any) => {
-    item.commentContent = parsingComments(item.commentContent)
+    item.commentContent = parsingComments(item.commentContent);
     if (item.childComment && item.childComment.length) {
-      handleComments(item.childComment)
+      handleComments(item.childComment);
     }
-  })
+  });
 }
 
 // 更多评论
 const moreComment = () => {
-  getComments(props.typeId, '1', String(pageSize.value += 3))
-}
+  getComments(props.typeId, "1", String((pageSize.value += 3)));
+};
 
 //  递归子评论方法
 function recursionChildComment(childComment: any, res: any) {
   res.data.forEach((item: any) => {
     childComment.forEach((child: any) => {
       if (child.id === item.typeId) {
-        child.isLike = true
+        child.isLike = true;
       }
       if (child.childComment && child.childComment.length) {
-        recursionChildComment(child.childComment, res)
+        recursionChildComment(child.childComment, res);
       }
-    })
-  })
+    });
+  });
 }
 
 // 修改 replyBtn 函数
@@ -221,7 +236,7 @@ function recursionReplyBtn(childComment: object[], id: number) {
 
 // 添加一个辅助函数来关闭所有回复框
 function closeAllReplyBoxes(comments: any[]) {
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     comment.showReplyBox = false;
     if (comment.childComment && comment.childComment.length) {
       closeAllReplyBoxes(comment.childComment);
@@ -229,145 +244,173 @@ function closeAllReplyBoxes(comments: any[]) {
   });
 }
 
-watch(() => props.typeId, (value) => {
-  getComments(value, '1', String(pageSize.value))
-})
+watch(
+  () => props.typeId,
+  (value) => {
+    getComments(value, "1", String(pageSize.value));
+  }
+);
 
 // 获取文章评论
 function getComments(typeId: number, pageNum: string, pageSize: string) {
-  getComment(<number>props.type, typeId, pageNum, pageSize).then(res => {
-    if (res.code == 200) {
-      isLoading.value = true
-      comments.value = res.data.page
-      commentsTotal.value = res.data.total
-      handleComments(res.data.page)
-      isLikeFunc()
-    }
-  })
+  //服务在线
+  if (props.serverOn)
+    getComment(<number>props.type, typeId, pageNum, pageSize).then((res) => {
+      if (res.code == 200) {
+        isLoading.value = true;
+        comments.value = res.data.page;
+        commentsTotal.value = res.data.total;
+        handleComments(res.data.page);
+        isLikeFunc();
+      }
+    });
 }
 
 // 点赞
 function likeBtn(comment: object) {
-  userLike(<number>props.likeType, comment.id).then(res => {
+  userLike(<number>props.likeType, comment.id).then((res) => {
     if (res.code === 200) {
-      comment.isLike = true
-      comment.likeCount += 1
+      comment.isLike = true;
+      comment.likeCount += 1;
       ElMessage.success("点赞成功");
     } else {
       ElMessage.error(res.msg);
     }
-  })
+  });
 }
 
 // 取消点赞
 function cancelLikeBtn(comment: object) {
-  cancelLike(<number>props.likeType, comment.id).then(res => {
+  cancelLike(<number>props.likeType, comment.id).then((res) => {
     if (res.code === 200) {
-      comment.isLike = false
-      comment.likeCount -= 1
+      comment.isLike = false;
+      comment.likeCount -= 1;
       ElMessage.info("取消点赞");
     } else {
       ElMessage.error(res.msg);
     }
-  })
+  });
 }
 
 function isLikeFunc() {
-  isLike(<number>props.likeType).then(res => {
+  isLike(<number>props.likeType).then((res) => {
     if (res.code === 200) {
       res.data.forEach((item: any) => {
         comments.value.forEach((comment: any) => {
           if (comment.id === item.typeId) {
-            comment.isLike = true
+            comment.isLike = true;
           }
           // 递归子评论
           if (comment.childComment && comment.childComment.length) {
-            recursionChildComment(comment.childComment, res)
+            recursionChildComment(comment.childComment, res);
           }
-        })
-      })
+        });
+      });
     }
-  })
+  });
 }
 
 // 添加父评论
 function addParentComment() {
-  if (textarea.value === '') {
+  if (textarea.value === "") {
     ElMessage.error("评论内容不能为空");
-    return
+    return;
   }
   let data = {
     type: props.type,
     typeId: props.typeId,
-    commentContent: textarea.value
-  }
+    commentContent: textarea.value,
+  };
   addComment(data).then((res: any) => {
     if (res.code === 200) {
       ElMessage.success("评论成功");
       if (res.data) {
         ElNotification({
-          title: '评论成功',
+          title: "评论成功",
           duration: 4000,
-          type: 'warning',
-          message: h('i', { style: 'color: teal' }, res.data),
-        })
+          type: "warning",
+          message: h("i", { style: "color: teal" }, res.data),
+        });
       }
-      textarea.value = ''
-      getComments(props.typeId, '1', String(pageSize.value))
+      textarea.value = "";
+      getComments(props.typeId, "1", String(pageSize.value));
     } else if (res.code === 1002) {
       ElMessage.error(res.msg);
     }
-  })
+  });
 }
-
 </script>
 
 <template>
   <div class="comments">
     <div v-if="isShowHeader">
       <div class="comments_title">
-        <svg-icon name="comment" width="1.5em" height="1.5em"/>
+        <svg-icon name="comment" width="1.5em" height="1.5em" />
         <span>评论({{ commentsTotal }})</span>
       </div>
       <div class="form_container">
         <!-- 评论框 -->
-        <textarea ref="myInput" class="textarea" v-model="textarea" placeholder="留下你的精彩评论吧！"/>
-        <div class="btn">
+        <textarea
+          :disabled="!serverOn"
+          ref="myInput"
+          class="textarea"
+          v-model="textarea"
+          :placeholder="placeholderText"
+        />
+        <div v-if="serverOn" class="btn">
           <div>
-            <EmojiPicker 
-              :popover-width="510" 
+            <EmojiPicker
+              :popover-width="510"
               @select-emoji="handleEmojiSelect"
               @mousedown.stop
               @click.stop
             >
               <template #trigger>
-                <div 
-                  class="emoji-trigger-btn" 
+                <div
+                  class="emoji-trigger-btn"
                   @click.stop="handleParentEmojiButtonClick"
                   @mousedown.stop
                 >
-                  <svg-icon name="emojis" class="emoji-icon"/>
+                  <svg-icon name="emojis" class="emoji-icon" />
                 </div>
               </template>
             </EmojiPicker>
           </div>
           <div>
-            <el-button type="info" plain size="small" @click="isPreview=!isPreview">预览</el-button>
-            <el-button type="success" plain size="small" @click="addParentComment">发布</el-button>
+            <el-button
+              type="info"
+              plain
+              size="small"
+              @click="isPreview = !isPreview"
+              >预览</el-button
+            >
+            <el-button
+              type="success"
+              plain
+              size="small"
+              @click="addParentComment"
+              >发布</el-button
+            >
           </div>
         </div>
         <!-- 预览 -->
         <div class="preview" v-if="isPreview">
-          <MdPreview :modelValue="preview" :theme="mode"/>
+          <MdPreview :modelValue="preview" :theme="mode" />
         </div>
       </div>
     </div>
     <!-- 评论内容 -->
     <div>
-      <div style="display: flex;margin-top: 1rem;border-top: 1px solid var(--el-border-color);
-  padding-top: 1rem;" v-for="comment in comments">
-        <el-avatar shape="square" :size="40"
-                   :src="comment.commentUserAvatar"/>
+      <div
+        style="
+          display: flex;
+          margin-top: 1rem;
+          border-top: 1px solid var(--el-border-color);
+          padding-top: 1rem;
+        "
+        v-for="comment in comments"
+      >
+        <el-avatar shape="square" :size="40" :src="comment.commentUserAvatar" />
         <div class="comment_content">
           <div class="comment_content_header">
             <div>
@@ -378,19 +421,35 @@ function addParentComment() {
               <div>{{ comment.createTime }}</div>
             </div>
             <div>
-              <SvgIcon @click="likeBtn(comment)" v-show="!comment.isLike" name="like" style="cursor: pointer"/>
-              <SvgIcon @click="cancelLikeBtn(comment)" v-show="comment.isLike" name="like-selected"
-                       style="cursor: pointer"/>
-              <span style="font-size: 0.8em;color: grey">{{ comment.likeCount }}</span>
-              <svg-icon @click="replyBtn(comments,comment.id)" name="comment"
-                        style="margin:0 0.2em 0 0.5rem;cursor: pointer"/>
-              <span style="font-size: 0.8em;color: grey">{{ comment.childCommentCount }}</span>
+              <SvgIcon
+                @click="likeBtn(comment)"
+                v-show="!comment.isLike"
+                name="like"
+                style="cursor: pointer"
+              />
+              <SvgIcon
+                @click="cancelLikeBtn(comment)"
+                v-show="comment.isLike"
+                name="like-selected"
+                style="cursor: pointer"
+              />
+              <span style="font-size: 0.8em; color: grey">{{
+                comment.likeCount
+              }}</span>
+              <svg-icon
+                @click="replyBtn(comments, comment.id)"
+                name="comment"
+                style="margin: 0 0.2em 0 0.5rem; cursor: pointer"
+              />
+              <span style="font-size: 0.8em; color: grey">{{
+                comment.childCommentCount
+              }}</span>
             </div>
           </div>
           <!-- 父评论 -->
           <div class="comment_content_body">
             <div>
-              <MdPreview :modelValue="comment.commentContent"/>
+              <MdPreview :modelValue="comment.commentContent" />
             </div>
           </div>
           <!-- TODO 评论信息 -->
@@ -401,10 +460,10 @@ function addParentComment() {
           <!--          </div>-->
           <!-- 回复框 -->
           <template v-if="isLoading">
-            <ReplyBox 
-              :type="type" 
-              :comment="comment" 
-              :get-comments="getComments" 
+            <ReplyBox
+              :type="type"
+              :comment="comment"
+              :get-comments="getComments"
               :page-size="pageSize"
               :active-comment-id="activeCommentId"
               :set-active-comment="setActiveComment"
@@ -412,14 +471,14 @@ function addParentComment() {
           </template>
           <!-- 子评论 -->
           <template v-if="comment.childComment && comment.childComment.length">
-            <ChildComment 
-              :reply-btn="replyBtn" 
-              :like-btn="likeBtn" 
-              :cancel-like-btn="cancelLikeBtn" 
+            <ChildComment
+              :reply-btn="replyBtn"
+              :like-btn="likeBtn"
+              :cancel-like-btn="cancelLikeBtn"
               :comment="comment"
               :author-id="authorId"
               :show-all-child-comments="showAllChildComments"
-              :get-comments="getComments" 
+              :get-comments="getComments"
               :page-size="pageSize"
               :type="type"
               :active-comment-id="activeCommentId"
@@ -427,11 +486,26 @@ function addParentComment() {
             />
           </template>
           <!-- 查看更多 -->
-          <div style="display: flex;justify-content: center;margin-top: 1rem" v-if="comment.childCommentCount >= 2">
-            <el-button type="info" plain size="small" @click="showAllChildComments = true" v-if="!showAllChildComments">
+          <div
+            style="display: flex; justify-content: center; margin-top: 1rem"
+            v-if="comment.childCommentCount >= 2"
+          >
+            <el-button
+              type="info"
+              plain
+              size="small"
+              @click="showAllChildComments = true"
+              v-if="!showAllChildComments"
+            >
               查看全部{{ comment.childCommentCount }}条回复
             </el-button>
-            <el-button type="info" plain size="small" @click="showAllChildComments = false" v-if="showAllChildComments">
+            <el-button
+              type="info"
+              plain
+              size="small"
+              @click="showAllChildComments = false"
+              v-if="showAllChildComments"
+            >
               收起回复
             </el-button>
           </div>
@@ -439,14 +513,19 @@ function addParentComment() {
       </div>
     </div>
     <!-- 查看更多 -->
-    <div class="more" v-if="isLoading && comments[0]?.parentCommentCount >= pageSize">
-      <el-button type="info" plain size="small" @click="moreComment">查看更多</el-button>
+    <div
+      class="more"
+      v-if="isLoading && comments[0]?.parentCommentCount >= pageSize"
+    >
+      <el-button type="info" plain size="small" @click="moreComment"
+        >查看更多</el-button
+      >
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-@use './index' as *;
+@use "./index" as *;
 
 .more {
   display: flex;

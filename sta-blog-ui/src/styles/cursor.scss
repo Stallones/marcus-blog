@@ -1,9 +1,7 @@
-:deep(.card .character .title[data-v-931120c3]){
-  // cursor: url(https://image.kuailemao.xyz/blog/cursor/带土+.cur), auto;
-  cursor: url('@/assets/cursor/带土+.cur'), auto;
-}
+// :deep(.card .character .title[data-v-931120c3]){
+//   cursor: url('@/assets/cursor/pointer.cur'), auto;
+// }
 
-*{
-  // cursor: url(https://image.kuailemao.xyz/blog/cursor/琳+.cur), default;
-  cursor: url('@/assets/cursor/琳+.cur'), default;
+body {
+  cursor: url('@/assets/cursor/pointer.cur'), auto;
 }

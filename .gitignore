@@ -11,5 +11,6 @@ yarn-error.log
 .idea
 blog.iml
 ruyu-blog-doc/
+.codebuddy
 application-dev.yml
 application-prod.yml

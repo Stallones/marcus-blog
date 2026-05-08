@@ -24,3 +24,13 @@ export const REQUEST_LOADING_PATH = [
     "/banners/list",
 ]
 
+/**
+ * 
+ */
+const myYiyanApi = import.meta.env.VITE_YIYAN_API
+export const IGNORE_ERROR_PATH = [
+    "/websiteInfo/health",
+    "https://v1.hitokoto.cn",
+    myYiyanApi,
+]
+

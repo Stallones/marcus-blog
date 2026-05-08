@@ -1,5 +1,6 @@
 import http from "@/utils/http.ts";
 import {AxiosResponse} from "axios";
+import { useServiceStore } from "@/store/modules/service";
 
 export interface UserInfo {
     nickname: string;
@@ -54,10 +55,17 @@ export function oauthLogin(accessToken: string,type: string,username: string) {
 
 // 获取用户信息
 export function getUserInfo():Promise<AxiosResponse<UserInfo>> {
-    return http({
-        url: '/user/auth/info',
-        method: 'get'
-    })
+
+    const serviceStore = useServiceStore();
+    const serviceMode = serviceStore.serviceMode;
+
+    switch (serviceMode) {
+        case "on": return http({
+            url: '/user/auth/info',
+            method: 'get'
+        }) as Promise<AxiosResponse<UserInfo>>
+        case "off": return Promise.resolve({ code: 200, msg: 'success', data: null }) as unknown as Promise<AxiosResponse<UserInfo>>
+    }
 }
 
 // 用户注册

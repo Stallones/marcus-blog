@@ -1,12 +1,18 @@
-import http from "@/utils/http.ts";
+import http, { localResponse } from "@/utils/http.ts";
 import { ApiResponse, Article } from '@/types';
+import { useServiceStore } from "@/store/modules/service";
+
 
 // 获取文章详细
 export const getArticleDetail = (id: string | string[]): Promise<ApiResponse<Article>> => {
-    return http.request({
-        url: `/article/detail/${id}`,
-        method: "get"
-    }) as Promise<ApiResponse<Article>>;
+    const serviceMode = useServiceStore().serviceMode;
+    switch (serviceMode) {
+        case "on": return http.request({
+            url: `/article/detail/${id}`,
+            method: "get"
+        }) as Promise<ApiResponse<Article>>;
+        case "off": return localResponse<Article>(`/articles/${id}`)
+    }
 }
 
 // 获取评论
@@ -59,9 +65,13 @@ export function addArticleVisit(id: String): Promise<ApiResponse<any>> {
 
 // 获取初始化时标题搜索数据
 export function getSearchTitleList(): Promise<ApiResponse<any>> {
-    return http.get(`/article/search/init/title`, {
-        method: "get"
-    }) as Promise<ApiResponse<any>>;
+    const serviceMode = useServiceStore().serviceMode;
+    switch (serviceMode) {
+        case "on": return http.get(`/article/search/init/title`, {
+            method: "get"
+        }) as Promise<ApiResponse<any>>;
+        case "off": return localResponse('/apis/search-titles')
+    }
 }
 
 // 对内容进行文章搜索

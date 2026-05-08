@@ -1,30 +1,33 @@
 <script setup lang="ts">
-import {MdCatalog} from 'md-editor-v3';
+import { MdCatalog } from "md-editor-v3";
 
 const scrollElement = document.documentElement;
-const id = 'preview-only';
-
+const id = "preview-only";
 </script>
 
 <template>
   <div class="card px-[10px]" v-slide-in>
     <div class="title">
       <div class="title_text">
-        <SvgIcon class="scale" name="directory" width="30" height="30"/>
+        <SvgIcon class="scale" name="directory" width="30" height="30" />
         <span style="margin-left: 10px">目录</span>
       </div>
     </div>
     <div class="min-h-[16em] max-h-[40em] overflow-y-auto">
-      <MdCatalog :editorId="id" :scrollElement="scrollElement"/>
+      <MdCatalog
+        :editorId="id"
+        :scrollElement="scrollElement"
+        :scrollElementOffsetTop=70
+        :offsetTop=71
+      />
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-
 // 目录
-:deep(.md-editor-catalog-active){
-  & > span{
+:deep(.md-editor-catalog-active) {
+  & > span {
     background: var(--el-color-primary-light-9);
     color: var(--el-color-primary-light-4);
     border-radius: $border-radius;
@@ -34,17 +37,17 @@ const id = 'preview-only';
   }
 }
 
-:deep(.md-editor-catalog){
-  span:hover{
+:deep(.md-editor-catalog) {
+  span:hover {
     color: var(--el-color-primary-light-5);
   }
 }
 
-:deep(.md-editor-catalog-link){
+:deep(.md-editor-catalog-link) {
   margin: 0;
   padding-top: 0;
   padding-bottom: 0;
-  span{
+  span {
     margin: 0.25rem 0.25rem;
     color: var(--el-text-color-regular);
   }
@@ -57,7 +60,7 @@ const id = 'preview-only';
 .card {
   background-color: var(--el-bg-color);
   width: $card-width;
-  margin: $card-margin;  
+  margin: $card-margin;
   border: 1px solid var(--el-border-color);
   border-radius: $border-radius;
   // 添加阴影

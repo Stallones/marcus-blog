@@ -20,9 +20,11 @@ import useWebsiteStore from "@/store/modules/website.ts";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import {ref} from "vue";
 import {useRoute} from "vue-router";
+import { useServiceStore } from "@/store/modules/service";
 
 const userStore = useUserStore()
 const useWebsite = useWebsiteStore()
+const isServiceAvailable = useServiceStore().isServiceAvailable
 const route = useRoute()
 // 日夜切换
 const mode = useColorMode()
@@ -242,7 +244,7 @@ onUnmounted(() => {
           <SvgIcon name="search" width="30" height="30" color="#409EFF" class="icon"/>
         </div>
       </div>
-      <div class="user-info">
+      <div v-if="isServiceAvailable" class="user-info">
         <div v-if="!userStore.userInfo">
           <el-tooltip
               class="box-item"

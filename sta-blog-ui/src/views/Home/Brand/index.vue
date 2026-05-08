@@ -6,7 +6,7 @@
       <!-- 打字机 -->
       <div class="brand-text">
         <div class="title">
-          {{obj.output}}
+          {{typerObj.output}}
           <span class="easy-typed-cursor">|</span>
         </div>
       </div>
@@ -29,14 +29,14 @@ import TextGlitch from "@/components/TextGlitch/index.vue";
 
 const useWebsite = useWebsiteStore()
 
-const obj = reactive({
+const typerObj = reactive({
   output: "",
-  isEnd: false,
-  speed: 300,
-  singleBack: false,
-  sleep: 3000,
   type: "rollback",
-  backSpeed: 100,
+  isEnd: false,
+  speed: 320,
+  backSpeed: 160,
+  singleBack: false,
+  sleep: 9000,
   sentencePause: false,
 });
 
@@ -48,7 +48,7 @@ const scrollDown = () => {
 };
 
 onMounted(() => {
-  getSoupTyping(obj)
+  getSoupTyping(typerObj)
 });
 
 </script>

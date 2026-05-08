@@ -6,11 +6,14 @@ import 'nprogress/nprogress.css';
 import {Jwt_Prefix} from "@/const/Jwt";
 import {GET_TOKEN} from "@/utils/auth.ts";
 import useLoadingStore from "@/store/modules/loading.ts";
-import {REQUEST_LOADING_PATH} from "@/utils/enum.ts";
+import {REQUEST_LOADING_PATH, IGNORE_ERROR_PATH} from "@/utils/enum.ts";
+import { decrypt, isCrypto } from '@/utils/crypto';
+import type { ApiResponse } from '@/types';
 
 // 创建axios实例
 // 说明：response 拦截器返回了 response.data，因此在调用处我们期望 http.get/post 等返回 Promise<T>（默认 any）。
 type HttpInstance = {
+    (config: any): Promise<any>;
     get<T = any>(url: string, config?: any): Promise<T>;
     post<T = any>(url: string, data?: any, config?: any): Promise<T>;
     put<T = any>(url: string, data?: any, config?: any): Promise<T>;
@@ -18,9 +21,19 @@ type HttpInstance = {
     [key: string]: any;
 }
 
+/** 从本地文件加载离线数据，根据 isCrypto() 自动补 .enc 或 .json 后缀
+ * @param filePath 文件路径（不含后缀），如 '/apis/search-titles'、'/articles/3'
+ */
+async function localResponse<T = any>(filePath: string): Promise<ApiResponse<T>> {
+    const encrypted = isCrypto()
+    const res = await fetch(filePath + (encrypted ? '.enc' : '.json'))
+    if (!res.ok) throw new Error(`本地文件不存在: ${filePath}`)
+    const data: T = encrypted ? decrypt(await res.text()) : await res.json()
+    return { code: 200, msg: 'success', data }
+}
 const http: HttpInstance = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API ?? '/', // api的base_url
-    timeout: 60000, // 请求超时时间
+    timeout: 5000, // 请求超时时间
     headers: {
         'Content-Type': 'application/json;charset=UTF-8'
     }
@@ -93,6 +106,8 @@ http.interceptors.response.use(
     },
     (error: AxiosError) => {
         let message = error.message;
+        let url = error?.config?.url;
+        let ignorePath = IGNORE_ERROR_PATH.find(path => url?.startsWith(path));
         if (message == "Network Error") {
             message = "后端接口连接异常";
         } else if (message.includes("timeout")) {
@@ -100,7 +115,7 @@ http.interceptors.response.use(
         } else if (message.includes("Request failed with status code")) {
             message = "系统接口" + message.substring(message.length - 3) + "异常";
         }
-        if (!error?.config?.url?.startsWith("https://v1.hitokoto.cn")) {
+        if (!ignorePath) {
             ElMessage.error(message)
         }
         return Promise.reject(error.response)
@@ -109,6 +124,7 @@ http.interceptors.response.use(
 
 
 export default http
+export {localResponse}
 
 
 
