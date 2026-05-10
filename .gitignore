@@ -14,3 +14,4 @@ ruyu-blog-doc/
 .codebuddy
 application-dev.yml
 application-prod.yml
+sta-blog-ui/tsc-output.txt

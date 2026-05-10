@@ -77,7 +77,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         if (this.saveOrUpdate(categoryDTO.asViewObject(Category.class))) return ResponseResult.success();
         return ResponseResult.failure();
     }
-
+    
     @Transactional
     @Override
     public ResponseResult<Void> deleteCategoryByIds(List<Long> ids) {

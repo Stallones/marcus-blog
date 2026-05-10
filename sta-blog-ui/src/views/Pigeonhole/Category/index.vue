@@ -1,71 +1,79 @@
 <script setup lang="ts">
-import {categoryList} from "@/apis/category";
-import {whereArticleList} from "@/apis/article";
-import ArticleList from "../ArticleList/index.vue"
-import {dayjs} from "element-plus";
+import { categoryList } from "@/apis/category";
+import { whereArticleList } from "@/apis/article";
+import ArticleList from "../ArticleList/index.vue";
+import { dayjs } from "element-plus";
+import { useServiceStore } from "@/store/modules/service";
+import { readCategoryList } from "@/utils/file-reader";
 
-const route = useRoute()
+const route = useRoute();
+const useService = useServiceStore();
 
-const categorys = ref<any[]>([])
-const articleList = ref<any[]>([])
-const isQueryArticle = ref(false)
+const categorys = ref<any[]>([]);
+const articleList = ref<any[]>([]);
+const isQueryArticle = ref(false);
 // 分类标题
-const title = ref('')
+const title = ref("");
 
 onMounted(async () => {
-  await categoryList().then((res: any) => {
-    if (res.code === 200) {
-      categorys.value = res.data
-    }
-  })
+  const res = await useService.requestOrRead(categoryList, readCategoryList);
+  if (res.code === 200) {
+    categorys.value = res.data;
+  }
 
   // 地址栏是否有分类id
   if (route.params.id) {
-    isQueryArticle.value = true
+    const cateId = Number(route.params.id)
+    isQueryArticle.value = true;
     // 判断选中的分类
-    categorys.value.forEach(item => {
-      if (item.id === Number(route.params.id)) {
-        item.isActive = true
-        title.value = item.categoryName
+    categorys.value.forEach((item) => {
+      if (item.id === cateId) {
+        item.isActive = true;
+        title.value = item.categoryName;
       } else {
-        item.isActive = false
+        item.isActive = false;
       }
-    })
-    getArticle(route.params.id)
+    });
+    getArticle(cateId);
   }
-})
+});
 
 // 地址栏是否有分类id
-watch(() => route.params.id, (id) => {
-  if (id) {
-    isQueryArticle.value = true
-    categorys.value.forEach(item => {
-      if (item.id === Number(route.params.id)) {
-        item.isActive = true
-        title.value = item.categoryName
-      } else {
-        item.isActive = false
-      }
-    })
-    getArticle(id)
-  } else {
-    isQueryArticle.value = false
+watch(
+  () => route.params.id,
+  (id) => {
+    if (id) {
+      const cateId = Number(route.params.id)
+      isQueryArticle.value = true;
+      categorys.value.forEach((item) => {
+        if (item.id === Number(route.params.id)) {
+          item.isActive = true;
+          title.value = item.categoryName;
+        } else {
+          item.isActive = false;
+        }
+      });
+      getArticle(cateId);
+    } else {
+      isQueryArticle.value = false;
+    }
   }
-})
+);
 
 // 文章
-function getArticle(id: string | string[]) {
-  const realId = Array.isArray(id) ? id[0] : id
-  whereArticleList(1, String(realId)).then((res: any) => {
+// function getArticle(id: string | string[]) {
+function getArticle(id: Number) {
+  const realId = Array.isArray(id) ? id[0] : id;
+  whereArticleList("category", realId).then((res: any) => {
     if (res.code === 200 && res.data !== undefined) {
       res.data.forEach((item: any) => {
-        item.createTime = dayjs(item.createTime).format('YYYY-MM-DD')
-      })
-      articleList.value = res.data
+        item.createTime = dayjs(item.createTime).format("YYYY-MM-DD");
+      });
+      articleList.value = res.data;
     } else {
-      articleList.value = []
+      articleList.value = [];
     }
-  })
+  });
 }
 </script>
 
@@ -73,19 +81,23 @@ function getArticle(id: string | string[]) {
   <div>
     <Main only-father-container>
       <template #banner>
-        <Banner title="分类" subtitle="category"/>
+        <Banner title="分类" subtitle="category" />
       </template>
       <template #content>
         <template v-if="!isQueryArticle">
           <div class="category_container">
-            <div class="title">
-              文章分类
-            </div>
+            <div class="title">文章分类</div>
             <div class="item_container">
               <template v-for="category in categorys" :key="category.id">
-                <div v-slide-in class="item" @click="$router.push(`/category/${category.id}`)">
+                <div
+                  v-slide-in
+                  class="item"
+                  @click="$router.push(`/category/${category.id}`)"
+                >
                   <div>{{ category.categoryName }}</div>
-                  <div><span>{{ category.articleCount }}</span></div>
+                  <div>
+                    <span>{{ category.articleCount }}</span>
+                  </div>
                 </div>
               </template>
             </div>
@@ -100,16 +112,19 @@ function getArticle(id: string | string[]) {
               <el-scrollbar>
                 <div class="scrollbar-flex-content">
                   <template v-for="category in categorys" :key="category.id">
-                    <p @click="$router.push(`/category/${category.id}`)"
-                       class="scrollbar-item" :class="category.isActive?'active':''">
+                    <p
+                      @click="$router.push(`/category/${category.id}`)"
+                      class="scrollbar-item"
+                      :class="category.isActive ? 'active' : ''"
+                    >
                       {{ category.categoryName }}
                     </p>
                   </template>
                 </div>
               </el-scrollbar>
             </div>
-            <el-divider/>
-            <ArticleList :articleList="articleList"/>
+            <el-divider />
+            <ArticleList :articleList="articleList" />
           </div>
         </template>
       </template>
@@ -118,7 +133,6 @@ function getArticle(id: string | string[]) {
 </template>
 
 <style scoped lang="scss">
-
 .category_container {
   display: flex;
   flex-direction: column;
@@ -204,7 +218,7 @@ function getArticle(id: string | string[]) {
         position: relative;
 
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           left: 0;
           bottom: -1rem;
@@ -225,6 +239,4 @@ function getArticle(id: string | string[]) {
     }
   }
 }
-
-
 </style>

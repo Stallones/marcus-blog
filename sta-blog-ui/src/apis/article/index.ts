@@ -1,92 +1,92 @@
-import http, { localResponse } from "@/utils/http.ts";
-import { ApiResponse, Article } from '@/types';
-import { useServiceStore } from "@/store/modules/service";
-
+import http from "@/utils/http.ts";
+import { ApiResponse, Article } from "@/types";
 
 // 获取文章详细
-export const getArticleDetail = (id: string | string[]): Promise<ApiResponse<Article>> => {
-    const serviceMode = useServiceStore().serviceMode;
-    switch (serviceMode) {
-        case "on": return http.request({
-            url: `/article/detail/${id}`,
-            method: "get"
-        }) as Promise<ApiResponse<Article>>;
-        case "off": return localResponse<Article>(`/articles/${id}`)
-    }
-}
+export const getArticleDetail = (
+  id: string | string[]
+): Promise<ApiResponse<Article>> => {
+  return http.request({
+    url: `/article/detail/${id}`,
+    method: "get",
+  });
+};
 
 // 获取评论
-export const getComment = (type: number, typeId: number, pageNum: string, pageSize: string) => {
-    return http.request({
-        url: '/comment/getComment',
-        method: "get",
-        params: {
-            type,
-            typeId,
-            pageNum,
-            pageSize
-        }
-    }) as Promise<ApiResponse<any>>;
-}
+export const getComment = (
+  type: number,
+  typeId: number,
+  pageNum: string,
+  pageSize: string
+) => {
+  return http.request({
+    url: "/comment/getComment",
+    method: "get",
+    params: {
+      type,
+      typeId,
+      pageNum,
+      pageSize,
+    },
+  }) as Promise<ApiResponse<any>>;
+};
 
 // 用户添加评论
 export const addComment = (data: object) => {
-    return http.request({
-        url: '/comment/auth/add/comment',
-        method: "post",
-        data
-    }) as Promise<ApiResponse<any>>;
-}
+  return http.request({
+    url: "/comment/auth/add/comment",
+    method: "post",
+    data,
+  }) as Promise<ApiResponse<any>>;
+};
 
 // 时间轴
 export const getTimeLine = (): Promise<ApiResponse<any>> => {
-    return http.request({
-        url: '/article/timeLine',
-        method: "get"
-    }) as Promise<ApiResponse<any>>;
-}
+  return http.request({
+    url: "/article/timeLine",
+    method: "get",
+  }) as Promise<ApiResponse<any>>;
+};
 
 // 查询不同类型下的文章列表
-export function whereArticleList(type: Number, typeId: String): Promise<ApiResponse<Article[]>> {
-    return http.get(`/article/where/list/${typeId}`, {
-        method: "get",
-        params: {
-            type
-        }
-    }) as Promise<ApiResponse<Article[]>>;
+export function whereArticleList(
+  type: String,
+  mid: Number
+): Promise<ApiResponse<Article[]>> {
+  return http.get(`/article/archive`, {
+    method: "get",
+    params: { type, mid },
+  }) as Promise<ApiResponse<Article[]>>;
 }
 
 // 文章访问量+1
 export function addArticleVisit(id: String): Promise<ApiResponse<any>> {
-    return http.get(`/article/visit/${id}`, {
-        method: "get"
-    }) as Promise<ApiResponse<any>>;
+  return http.get(`/article/visit/${id}`, {
+    method: "get",
+  }) as Promise<ApiResponse<any>>;
 }
 
 // 获取初始化时标题搜索数据
 export function getSearchTitleList(): Promise<ApiResponse<any>> {
-    const serviceMode = useServiceStore().serviceMode;
-    switch (serviceMode) {
-        case "on": return http.get(`/article/search/init/title`, {
-            method: "get"
-        }) as Promise<ApiResponse<any>>;
-        case "off": return localResponse('/apis/search-titles')
-    }
+  return http.get(`/article/search/init/title`, {
+    method: "get",
+  });
 }
 
 // 对内容进行文章搜索
-export function searchArticleContent(content: String): Promise<ApiResponse<any>> {
-    return http.get('/article/search/by/content', {
-        params: {
-            content
-        },
-        method: "get"
-    }) as Promise<ApiResponse<any>>;
+export function searchArticleContent(
+  content: String
+): Promise<ApiResponse<any>> {
+  return http.get("/article/search/by/content", {
+    params: {
+      content,
+    },
+    method: "get",
+  }) as Promise<ApiResponse<any>>;
 }
 
 // 搜索热门推荐
 export function getHotRecommend(): Promise<ApiResponse<any>> {
-    return http.get(`/article/hot`, {
-        method: "get"
-    }) as Promise<ApiResponse<any>>;
+  return http.get(`/article/hot`, {
+    method: "get",
+  }) as Promise<ApiResponse<any>>;
 }

@@ -20,7 +20,7 @@ import useWebsiteStore from "@/store/modules/website.ts";
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import {ref} from "vue";
 import {useRoute} from "vue-router";
-import { useServiceStore } from "@/store/modules/service";
+import {useServiceStore} from "@/store/modules/service";
 
 const userStore = useUserStore()
 const useWebsite = useWebsiteStore()

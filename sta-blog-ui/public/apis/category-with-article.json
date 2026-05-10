@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "categoryName": "生活",
+    "articleCount": 1,
+    "articleIdList": [40]
+  },
+  {
+    "id": 2,
+    "categoryName": "技术",
+    "articleCount": 2,
+    "articleIdList": [1, 3]
+  },
+  {
+    "id": 3,
+    "categoryName": "娱乐",
+    "articleCount": 1,
+    "articleIdList": [24]
+  },
+  {
+    "id": 4,
+    "categoryName": "分类",
+    "articleCount": 1,
+    "articleIdList": [32]
+  }
+]

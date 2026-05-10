@@ -7,7 +7,6 @@ import com.sta.domain.dto.ArticleDTO;
 import com.sta.domain.dto.SearchArticleDTO;
 import com.sta.domain.entity.Article;
 import com.sta.domain.response.ResponseResult;
-import com.sta.domain.vo.*;
 
 import java.util.List;
 
@@ -41,6 +40,29 @@ public interface ArticleService extends IService<Article> {
     ArticleDetailVO getArticleDetail(Integer id);
 
     /**
+     * 获取所有文章详情（不含 articleContent）
+     * @return 文章详情列表
+     */
+    List<ArticleDetailVO> listArticleDetail();
+
+    /**
+     * 获取所有文章内容（仅返回 id 和 articleContent）
+     * @return 文章 id + 内容列表
+     */
+    List<ArticleContentVO> listArticleContent();
+
+    /**
+     * 查询所有分类及其关联的文章ID
+     * @return 分类及关联文章ID列表
+     */
+    List<CategoryWithArticleVO> listCategoryWithArticleId();
+
+    /**
+     * 查询所有标签及其关联的文章ID
+     * @return 标签及关联文章ID列表
+     */
+    List<TagWithArticleVO> listTagWithArticleId();
+    /**
      * 相关文章信息
      *
      * @param categoryId 文章分类id
@@ -57,11 +79,11 @@ public interface ArticleService extends IService<Article> {
     /**
      * 查询分类或标签下的文章
      *
-     * @param type   类型
-     * @param typeId 类型id
+     * @param mid 类型或者标签id
      * @return vo
      */
-    List<CategoryArticleVO> listCategoryArticle(Integer type, Long typeId);
+    List<ArchiveArticleVO> listArchiveArticle(String type,Long mid);
+
 
     /**
      * 增加文章访问量

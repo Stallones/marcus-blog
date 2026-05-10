@@ -7,7 +7,9 @@ import {Ref, UnwrapRef} from "vue";
 import {ElMessage} from "element-plus";
 import {getLeaveWordList, userLeaveWord} from "@/apis/leaveWord";
 import {useColorMode} from "@vueuse/core";
+import { useServiceStore } from '@/store/modules/service';
 
+const serviceStore = useServiceStore()
 const mode = useColorMode()
 const isShow = ref(false);
 const text = ref('');
@@ -93,7 +95,8 @@ function mdContent(content: string) {
     <div>
       <div class="title">
         <div>留言板</div>
-        <el-button type="primary" plain @click="isShow = true">留言</el-button>
+        <el-button type="primary" plain @click="isShow = true" v-if="serviceStore.isServiceAvailable">留言</el-button>
+        <span v-else style="color: grey; font-size: 0.9rem;">静态模式下，留言功能不可用</span>
       </div>
       <el-divider/>
       <div class="title_content">

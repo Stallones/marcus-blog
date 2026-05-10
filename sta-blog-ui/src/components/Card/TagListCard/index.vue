@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue';
 import { tagList } from '@/apis/tag';
 import { useRouter } from 'vue-router';
+import { useServiceStore } from '@/store/modules/service';
+import { readTagList } from '@/utils/file-reader';
 
 // 标签类型接口
 interface Tag {
@@ -11,13 +13,16 @@ interface Tag {
 }
 
 const router = useRouter();
+const useService = useServiceStore()
+
 const tags = ref<Tag[]>([]);
 const loading = ref(true);
 
 // 加载标签数据
-function loadContent() {
+async function loadContent() {
   loading.value = true;
-  tagList().then((res: any) => {
+  try{
+    const res = await useService.requestOrRead(tagList,readTagList)
     if (res.code === 200 && res.data) {
       // 按文章数量排序并取前10个
       tags.value = res.data
@@ -25,9 +30,9 @@ function loadContent() {
         .slice(0, 10);
     }
     loading.value = false;
-  }).catch(() => {
+  }catch{
     loading.value = false;
-  });
+  }
 }
 
 // 跳转到标签详情页

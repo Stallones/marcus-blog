@@ -1,88 +1,100 @@
 <script setup lang="ts">
-import ArticleList from "../ArticleList/index.vue"
-import {tagList} from "@/apis/tag";
-import {whereArticleList} from "@/apis/article";
+import ArticleList from "../ArticleList/index.vue";
+import { tagList } from "@/apis/tag";
+import { whereArticleList } from "@/apis/article";
+import { useServiceStore } from "@/store/modules/service";
+import { readTagList } from "@/utils/file-reader";
 
-const route = useRoute()
+const route = useRoute();
+const useService = useServiceStore()
 
-const isQueryArticle = ref(false)
-const tags = ref<any[]>([])
-const articleList = ref<any[]>([])
-const title = ref('')
+const isQueryArticle = ref(false);
+const tags = ref<any[]>([]);
+const articleList = ref<any[]>([]);
+const title = ref("");
 
 onMounted(async () => {
-  await tagList().then(res => {
-    if (res.code === 200 && res.data !== undefined) {
-      tags.value = res.data
-    } else {
-      ElMessage.error(res.msg)
-    }
-  })
-  if (route.params.id) {
-    isQueryArticle.value = true
-    tags.value.forEach(item => {
-      if (item.id === Number(route.params.id)) {
-        title.value = item.tagName
-      }
-    })
-    getArticle(route.params.id)
-  }
-})
+  const res = await useService.requestOrRead(tagList,readTagList);
 
-watch(() => route.params.id, (id) => {
-  if (id) {
-    isQueryArticle.value = true
-    tags.value.forEach(item => {
-      if (item.id === Number(route.params.id)) {
-        title.value = item.tagName
-      }
-    })
-    getArticle(id)
+  if (res.code === 200 && res.data !== undefined) {
+    tags.value = res.data;
   } else {
-    isQueryArticle.value = false
+    ElMessage.error(res.msg);
   }
-})
+
+  if (route.params.id) {
+    const cateId = Number(route.params.id)
+    isQueryArticle.value = true;
+    tags.value.forEach((item) => {
+      if (item.id === cateId) {
+        title.value = item.tagName;
+      }
+    });
+    getArticle(cateId);
+  }
+});
+
+watch(
+  () => route.params.id,
+  (id) => {
+    if (id) {
+      const cateId = Number(route.params.id)
+      isQueryArticle.value = true;
+      tags.value.forEach((item) => {
+        if (item.id === cateId) {
+          title.value = item.tagName;
+        }
+      });
+      getArticle(cateId);
+    } else {
+      isQueryArticle.value = false;
+    }
+  }
+);
 
 // 文章
-function getArticle(id: string | string[]) {
-  const realId = Array.isArray(id) ? id[0] : id
-  whereArticleList(2, String(realId)).then(res => {
+// function getArticle(id: string | string[]) {
+function getArticle(id: Number) {
+  const realId = Array.isArray(id) ? id[0] : id;
+  whereArticleList("tag", realId).then((res) => {
     if (res.code === 200 && res.data !== undefined) {
-      articleList.value = res.data
+      articleList.value = res.data;
     } else {
-      articleList.value = []
+      articleList.value = [];
     }
-  })
+  });
 }
-
 </script>
 
 <template>
   <div>
     <Main only-father-container>
       <template #banner>
-        <Banner title="标签页" subtitle="tags"/>
+        <Banner title="标签页" subtitle="tags" />
       </template>
       <template #content>
         <div class="tags_container">
-          <div class="title" v-if="!isQueryArticle">
-            标签 {{ title }}
-          </div>
-          <div class="title" v-if="isQueryArticle">
-            标签 - {{ title }}
-          </div>
+          <div class="title" v-if="!isQueryArticle">标签 {{ title }}</div>
+          <div class="title" v-if="isQueryArticle">标签 - {{ title }}</div>
           <template v-if="!isQueryArticle">
             <div class="item_container">
               <template v-for="tag in tags" :key="tag.id">
-                <div v-slide-in class="item" @click="$router.push(`/tags/${tag.id}`)">
-                  <span @click="$router.push(`/tags/${tag.id}`)"># {{ tag.tagName }}</span>
-                  <span>{{ tag.articleCount }}</span></div>
+                <div
+                  v-slide-in
+                  class="item"
+                  @click="$router.push(`/tags/${tag.id}`)"
+                >
+                  <span @click="$router.push(`/tags/${tag.id}`)"
+                    ># {{ tag.tagName }}</span
+                  >
+                  <span>{{ tag.articleCount }}</span>
+                </div>
               </template>
             </div>
           </template>
           <template v-if="isQueryArticle">
-            <el-divider/>
-            <ArticleList :article-list="articleList"/>
+            <el-divider />
+            <ArticleList :article-list="articleList" />
           </template>
         </div>
       </template>
@@ -134,11 +146,10 @@ function getArticle(id: string | string[]) {
       }
 
       &:hover {
-        border: 1px solid #409EFF;
+        border: 1px solid #409eff;
         transform: translateY(-0.2rem);
       }
     }
   }
 }
-
 </style>

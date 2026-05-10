@@ -168,7 +168,7 @@
           </div>
           <!-- 用户评论 -->
           <Comment
-            :server-on="isServiceAvailable"
+            :server-on="useService.isServiceAvailable"
             :type="1"
             :like-type="2"
             :author-id="articleDetail.userId"
@@ -416,12 +416,14 @@ import { throttle } from "@/utils/optimize.ts";
 import { ARTICLE_VISIT_PREFIX } from "@/const/Visits";
 import { useServiceStore } from "@/store/modules/service";
 import payQr from "@/assets/pay/a77178025b790601a8a0a8361718b148.png";
+import { readArticleDetail } from "@/utils/file-reader";
 
 // .env
 const env = import.meta.env;
 
+const route = useRoute();
 const websiteStore = useWebsiteStore();
-const isServiceAvailable = useServiceStore().isServiceAvailable;
+const useService = useServiceStore();
 const colorMode = useColorMode();
 const mode = computed(() =>
   colorMode.value === "auto" ? "light" : colorMode.value
@@ -452,8 +454,6 @@ const articleDetail = ref({
   nextArticleTitle: "",
 });
 
-const route = useRoute();
-
 // 是否加载
 const showTag = ref(false); //标签
 const showLikFav = ref(false); //点赞收藏
@@ -476,46 +476,50 @@ onMounted(async () => {
 });
 
 async function getArticleDetailById() {
-  getArticleDetail(route.params.id).then((res) => {
-    if (!res.data) {
-      ElMessage.warning({
-        message: "文章不存在",
-      });
-      // 跳转回去
-      router.push({ path: "/" });
-      return;
+  const res = await useService.requestOrRead(
+    getArticleDetail,
+    readArticleDetail,
+    route.params.id
+  );
+  if (!res.data) {
+    ElMessage.warning({
+      message: "文章不存在",
+    });
+    // 跳转回去
+    router.push({ path: "/" });
+    return;
+  }
+  // 设置title
+  useTitle(res.data.title);
+  if (route.params.id) {
+    if (!sessionStorage.getItem(ARTICLE_VISIT_PREFIX + route.params.id)) {
+      // 避免重复刷新
+      sessionStorage.setItem(
+        ARTICLE_VISIT_PREFIX + route.params.id,
+        route.params.id as string
+      );
+      //服务可用
+      if (useService.isServiceAvailable)
+        addArticleVisit(route.params.id as string);
     }
-    // 设置title
-    useTitle(res.data.title);
-    if (route.params.id) {
-      if (!sessionStorage.getItem(ARTICLE_VISIT_PREFIX + route.params.id)) {
-        // 避免重复刷新
-        sessionStorage.setItem(
-          ARTICLE_VISIT_PREFIX + route.params.id,
-          route.params.id as string
-        );
-        //服务可用
-        if (isServiceAvailable) addArticleVisit(route.params.id as string);
-      }
-    }
-    // 时间去掉时分秒
-    res.data.createTime = res.data.createTime?.split(" ")[0];
-    res.data.updateTime = res.data.updateTime?.split(" ")[0];
-    articleDetail.value = res.data as any;
-    showTag.value = true;
-    //服务可用
-    if (isServiceAvailable) {
-      // 控制 随机文章
-      showRandom.value = true && articleDetail.value.categoryId !== "";
-      //控制 尾部标签与点赞收藏分享、用户评论的展示
-      showLikFav.value = true;
-      showComment.value = true;
-      // 收藏
-      isFavoriteFunc();
-      // 点赞
-      isLikeFunc();
-    }
-  });
+  }
+  // 时间去掉时分秒
+  res.data.createTime = res.data.createTime?.split(" ")[0];
+  res.data.updateTime = res.data.updateTime?.split(" ")[0];
+  articleDetail.value = res.data as any;
+  showTag.value = true;
+  //服务可用
+  if (useService.isServiceAvailable) {
+    // 控制 随机文章
+    showRandom.value = true && articleDetail.value.categoryId !== "";
+    //控制 尾部标签与点赞收藏分享、用户评论的展示
+    showLikFav.value = true;
+    showComment.value = true;
+    // 收藏
+    isFavoriteFunc();
+    // 点赞
+    isLikeFunc();
+  }
 }
 
 function mdHtml(htmlText: string) {

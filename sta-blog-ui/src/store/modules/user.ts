@@ -1,25 +1,24 @@
-import {defineStore} from 'pinia'
-import {GET_TOKEN} from '@/utils/auth.ts';
-import {getUserInfo, UserInfo} from "@/apis/user";
+import { defineStore } from "pinia"
+import { GET_TOKEN } from "@/utils/auth.ts"
+import { getUserInfo, UserInfo } from "@/apis/user"
 
-const useUserStore = defineStore('user', () => {
-    const token = GET_TOKEN()
-    const userInfo = shallowRef<UserInfo>()
+const useUserStore = defineStore("user", () => {
+  const token = GET_TOKEN()
+  const userInfo = shallowRef<UserInfo>();
 
-    // 获取用户信息
-    const getInfo = async () => {
-        getUserInfo().then((res: any) => {
-            if (res.code === 200) {
-                userInfo.value = res.data
-            }
-        })
+  // 获取用户信息
+  const getInfo = async () => {
+    const res = await getUserInfo()
+    if (res.code === 200) {
+      userInfo.value = res.data
     }
+  }
 
-    return {
-        token,
-        userInfo,
-        getInfo
-    }
+  return {
+    token,
+    userInfo,
+    getInfo,
+  }
 })
 
-export default useUserStore;
+export default useUserStore

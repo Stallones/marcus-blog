@@ -85,5 +85,6 @@ declare module 'vue' {
     TimeVolume: typeof import('./../components/Music/controls/components/time-volume.vue')['default']
     ToTop: typeof import('./../components/ToTop/index.vue')['default']
     Wave: typeof import('./../components/Wave/index.vue')['default']
+    WelcomeCharacter: typeof import('./../components/WelcomeCharacter/index.vue')['default']
   }
 }

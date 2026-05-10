@@ -17,8 +17,8 @@ const id = "preview-only";
       <MdCatalog
         :editorId="id"
         :scrollElement="scrollElement"
-        :scrollElementOffsetTop=70
-        :offsetTop=71
+        :scrollElementOffsetTop="390"
+        :offsetTop="390"
       />
     </div>
   </div>

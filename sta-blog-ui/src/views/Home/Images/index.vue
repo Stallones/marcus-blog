@@ -1,30 +1,34 @@
 <template>
   <div class="imgs">
     <ul>
-      <li class="item" v-for="(image, index) in imageList" :key="index" :style="{
-        'background-image': 'url(' + image + ')'
-      }">
-      </li>
+      <li
+        class="item"
+        v-for="(image, index) in imageList"
+        :key="index"
+        :style="{
+          'background-image': 'url(' + image + ')',
+        }"
+      ></li>
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
+import { backGetBanners } from "@/apis/website";
+import { Ref } from "vue";
+import { useServiceStore } from "@/store/modules/service";
+import { readBanners } from "@/utils/file-reader";
 
-import {backGetBanners} from "@/apis/website";
-import {Ref} from "vue";
+const imageList = <Ref<String[]>>ref();
+const useService = useServiceStore();
 
-const imageList = <Ref<String[]>>ref()
-
-onMounted(() => {
-  backGetBanners().then((res:any) => {
-    imageList.value = res.data
-  })
-})
+onMounted(async () => {
+  const res = await useService.requestOrRead(backGetBanners, readBanners);
+  imageList.value = res.data;
+});
 </script>
 
 <style lang="scss" scoped>
-
 .imgs {
   position: fixed;
   top: 0;
@@ -57,7 +61,7 @@ onMounted(() => {
     }
 
     &:nth-child(4) {
-      animation-delay:18s;
+      animation-delay: 18s;
     }
 
     &:nth-child(5) {
@@ -70,15 +74,15 @@ onMounted(() => {
   }
 
   &::before {
-    content: '';
+    content: "";
     display: block;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, .2);
-    transition: all .2s ease-in-out 0s;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out 0s;
   }
 }
 

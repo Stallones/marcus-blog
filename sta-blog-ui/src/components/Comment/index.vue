@@ -9,6 +9,7 @@ import { cancelLike, isLike, userLike } from "@/apis/like";
 import ChildComment from "./ChildComment.vue";
 import { ElMessage } from "element-plus";
 import { useColorMode } from "@vueuse/core";
+import { useServiceStore } from "@/store/modules/service";
 
 const props = defineProps({
   serverOn: {
@@ -106,6 +107,7 @@ const showAllChildComments = ref(false);
 const pageSize = ref(2);
 
 const mode = useColorMode();
+const serviceStore = useServiceStore();
 
 // 默认选中第一个
 onMounted(() => {
@@ -400,7 +402,7 @@ function addParentComment() {
       </div>
     </div>
     <!-- 评论内容 -->
-    <div>
+    <div v-if="serverOn">
       <div
         style="
           display: flex;

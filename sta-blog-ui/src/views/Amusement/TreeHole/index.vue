@@ -2,6 +2,9 @@
 import vueDanmaku from 'vue3-danmaku'
 import {addTreeHole, getTreeHoleList} from "@/apis/treeHole";
 import {ElMessage} from "element-plus";
+import {useServiceStore} from '@/store/modules/service';
+
+const isServiceAvailable = useServiceStore().isServiceAvailable
 
 const treeHoleList = ref<any[]>([])
 // 是否显示提交按钮
@@ -43,9 +46,12 @@ function getTreeHole() {
   <div class="container">
     <div class="content_container">
       <div>树洞</div>
-      <div>
+      <div v-if="isServiceAvailable">
         <input v-model="content" @focus="isShowSubmit = true" type="text" placeholder="在这里留下自己的足迹吧...">
         <button v-show="isShowSubmit" @click="addTreeHoleBtn"><span style="color: grey;font-style: italic;font-weight: bold">提交</span></button>
+      </div>
+      <div v-else style="color: white; text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+        静态模式下，树洞功能不可用
       </div>
     </div>
     <vue-danmaku :debounce="3000"

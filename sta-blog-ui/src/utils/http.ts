@@ -1,5 +1,5 @@
 // 封装axios
-import axios, {AxiosError, InternalAxiosRequestConfig, AxiosResponse} from 'axios'
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import {ElMessage, ElNotification} from "element-plus"
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -7,30 +7,20 @@ import {Jwt_Prefix} from "@/const/Jwt";
 import {GET_TOKEN} from "@/utils/auth.ts";
 import useLoadingStore from "@/store/modules/loading.ts";
 import {REQUEST_LOADING_PATH, IGNORE_ERROR_PATH} from "@/utils/enum.ts";
-import { decrypt, isCrypto } from '@/utils/crypto';
 import type { ApiResponse } from '@/types';
 
 // 创建axios实例
-// 说明：response 拦截器返回了 response.data，因此在调用处我们期望 http.get/post 等返回 Promise<T>（默认 any）。
+// 说明：response 拦截器返回了 response.data，因此在调用处我们期望 http.get/post 等返回 Promise<ApiResponse<T>>。
+//        ApiResponse 包含 { code, data, msg } 三个字段，与后端统一响应体对应。
 type HttpInstance = {
-    (config: any): Promise<any>;
-    get<T = any>(url: string, config?: any): Promise<T>;
-    post<T = any>(url: string, data?: any, config?: any): Promise<T>;
-    put<T = any>(url: string, data?: any, config?: any): Promise<T>;
-    delete<T = any>(url: string, config?: any): Promise<T>;
+    <T = any>(config: any): Promise<ApiResponse<T>>;
+    get<T = any>(url: string, config?: any): Promise<ApiResponse<T>>;
+    post<T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>>;
+    put<T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>>;
+    delete<T = any>(url: string, config?: any): Promise<ApiResponse<T>>;
     [key: string]: any;
 }
 
-/** 从本地文件加载离线数据，根据 isCrypto() 自动补 .enc 或 .json 后缀
- * @param filePath 文件路径（不含后缀），如 '/apis/search-titles'、'/articles/3'
- */
-async function localResponse<T = any>(filePath: string): Promise<ApiResponse<T>> {
-    const encrypted = isCrypto()
-    const res = await fetch(filePath + (encrypted ? '.enc' : '.json'))
-    if (!res.ok) throw new Error(`本地文件不存在: ${filePath}`)
-    const data: T = encrypted ? decrypt(await res.text()) : await res.json()
-    return { code: 200, msg: 'success', data }
-}
 const http: HttpInstance = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API ?? '/', // api的base_url
     timeout: 5000, // 请求超时时间
@@ -124,7 +114,3 @@ http.interceptors.response.use(
 
 
 export default http
-export {localResponse}
-
-
-

@@ -13,8 +13,8 @@ import java.util.List;
  * 分类下的文章vo
  */
 @Data
-@Schema(name = "CategoryArticleVO", description = "分类下的文章vo")
-public class CategoryArticleVO {
+@Schema(name = "ArchiveArticleVO", description = "分类下的文章vo")
+public class ArchiveArticleVO {
     //文章id
     @Schema(description = "文章id")
     private Long id;
