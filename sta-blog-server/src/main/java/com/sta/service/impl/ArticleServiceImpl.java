@@ -359,14 +359,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public List<ArchiveArticleVO> listArchiveArticle(String type, Long mid) {
+    public List<ArchiveArticleVO> listArchiveArticle(String archiveType, Long archiveId) {
         List<Article> articles;
-        if (WebsiteInfoConst.ARCHIVE_CATEGORY_CONS.equals(type))
+        if (WebsiteInfoConst.ARCHIVE_CATEGORY_CONS.equals(archiveType))
             articles = articleMapper.selectList(new LambdaQueryWrapper<Article>()
-                    .eq(Article::getCategoryId, mid));
-        else if (WebsiteInfoConst.ARCHIVE_TAG_CONS.equals(type)) {
+                    .eq(Article::getCategoryId, archiveId));
+        else if (WebsiteInfoConst.ARCHIVE_TAG_CONS.equals(archiveType)) {
             List<Long> articleIds = articleTagMapper.selectList(new LambdaQueryWrapper<ArticleTag>()
-                    .eq(ArticleTag::getTagId, mid))
+                    .eq(ArticleTag::getTagId, archiveId))
                     .stream().map(ArticleTag::getArticleId).toList();
             if (!articleIds.isEmpty()) articles = articleMapper.selectBatchIds(articleIds);
             else articles = List.of();

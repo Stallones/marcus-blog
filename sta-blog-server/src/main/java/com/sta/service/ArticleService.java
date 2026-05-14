@@ -79,11 +79,10 @@ public interface ArticleService extends IService<Article> {
     /**
      * 查询分类或标签下的文章
      *
-     * @param mid 类型或者标签id
+     * @param archiveType 类型或者标签id
      * @return vo
      */
-    List<ArchiveArticleVO> listArchiveArticle(String type,Long mid);
-
+    List<ArchiveArticleVO> listArchiveArticle(String archiveType,Long archiveId);
 
     /**
      * 增加文章访问量

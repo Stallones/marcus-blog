@@ -1,12 +1,13 @@
 <template>
   <Main is-side-bar>
-    <!-- 内容区 -->
+    <!--内容区 -->
     <template #content>
       <div class="announcement">
         <SvgIcon style="min-width: 30px" name="notice" color="#409EFF"/>
         <span>{{ useWebsite?.webInfo?.headerNotification }}</span>
       </div>
       <RecommendArticle/>
+      <OfflineSearch v-if="!useService.isServiceAvailable"/>
       <div class="essay_title">
         <el-divider border-style="dashed" content-position="left">
           <div>
@@ -32,13 +33,17 @@
       <SideBar/>
     </template>
   </Main>
-</template>
+</template >
+
 
 <script setup lang="ts">
 import RecommendArticle from './RecommendArticle/index.vue'
+import OfflineSearch from './OfflineSearch/index.vue'
 import useWebsiteStore from "@/store/modules/website.ts";
+import { useServiceStore } from '@/store/modules/service';
 
 const useWebsite = useWebsiteStore()
+const useService = useServiceStore()
 
 </script>
 

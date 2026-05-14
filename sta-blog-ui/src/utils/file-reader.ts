@@ -76,12 +76,12 @@ export function readWebsiteInfo() {
 }
 
 // 获取归档下的文章列表（离线模式，通用）
-// commentType: ARCHIVE_CATEGORY_CONS → 从 category-with-article 找; 否则 → 从 tag-with-article 找
+// archiveType: ARCHIVE_CATEGORY_CONS → 从 category-with-article 找; 否则 → 从 tag-with-article 找
 export async function readArchiveArticleList(
-  commentType: string,
-  relationId: number
+  archiveType: string,
+  archiveId: number
 ) {
-  const isCategory = commentType === ARCHIVE_CATEGORY_CONS;
+  const isCategory = archiveType === ARCHIVE_CATEGORY_CONS;
   const dataFile = isCategory
     ? "/apis/category-with-article"
     : "/apis/tag-with-article";
@@ -91,7 +91,7 @@ export async function readArchiveArticleList(
   if (!entityRes.data)
     return { code: 201, msg: `${entityLabel}数据未同步`, data: null };
 
-  const entity = entityRes.data.find((e) => e.id === relationId);
+  const entity = entityRes.data.find((e) => e.id === archiveId);
   if (!entity) return { code: 201, msg: `${entityLabel}不存在`, data: null };
 
   const articleIdList: number[] = entity.articleIdList;

@@ -239,7 +239,7 @@ onUnmounted(() => {
       </div>
       <div id="search-button">
         <!-- 搜索按钮 -->
-        <div class="search" @click="dialogVisible = true">
+        <div v-if="isServiceAvailable" class="search" @click="dialogVisible = true">
           <SvgIcon name="search" width="30" height="30" color="#409EFF" class="icon"/>
         </div>
       </div>

@@ -46,11 +46,11 @@ export const getTimeLine = () => {
 };
 
 // 查询不同类型下的文章列表
-export const whereArticleList = (commentType: string, commentPId: number) => {
+export const whereArticleList = (archiveType: string, archiveId: number) => {
   return http({
     url: "/article/archive",
     method: "get",
-    params: { commentType, commentPId },
+    params: { archiveType, archiveId },
   });
 };
 

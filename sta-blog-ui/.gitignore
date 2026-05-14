@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 public/pagefind/
+src/pagefind/
 
 # Editor directories and files
 .vscode/*

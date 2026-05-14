@@ -140,16 +140,16 @@ public class ArticleController {
 
     @Operation(summary = "获取分类与标签下的文章")
     @Parameters({
-            @Parameter(name = "type", description = "类型（category/tag）", required = true),
-            @Parameter(name = "mid", description = "类型或标签id", required = true)
+            @Parameter(name = "archiveType", description = "类型（category/tag）", required = true),
+            @Parameter(name = "archiveId", description = "类型或标签id", required = true)
     })
     @AccessLimit(seconds = 60, maxCount = 60)
-    @GetMapping(value = "/archive", params = {"type", "mid"})
+    @GetMapping(value = "/archive", params = {"archiveType", "archiveId"})
     public ResponseResult<List<ArchiveArticleVO>> listArchiveArticle(
-            @NotNull @RequestParam("type") String type,
-            @NotNull @RequestParam("mid") Long mid
+            @NotNull @RequestParam("archiveType") String archiveType,
+            @NotNull @RequestParam("archiveId") Long archiveId
     ) {
-        return ControllerUtils.messageHandler(() -> articleService.listArchiveArticle(type, mid));
+        return ControllerUtils.messageHandler(() -> articleService.listArchiveArticle(archiveType, archiveId));
     }
 
     @Operation(summary = "文章访问量+1")

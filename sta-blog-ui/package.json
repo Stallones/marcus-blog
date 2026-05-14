@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --mode production",
-    "postbuild": "pagefind --site dist",
+    "page": "node src/utils/pagefind-dev.mjs",
+    "build": "vite build --mode production && node src/utils/generate-article-pages.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "@vueuse/core": "^10.4.1",
     "axios": "^1.5.1",
+     "crypto-js": "^4.2.0",
     "easy-typer-js": "^2.1.0",
     "echarts": "^5.4.3",
     "element-plus": "^2.8.6",
