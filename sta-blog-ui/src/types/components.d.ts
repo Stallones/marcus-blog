@@ -26,6 +26,7 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckTag: typeof import('element-plus/es')['ElCheckTag']
+    ElCol: typeof import('element-plus/es')['ElCol']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElDrawer: typeof import('element-plus/es')['ElDrawer']
@@ -42,12 +43,15 @@ declare module 'vue' {
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElPopover: typeof import('element-plus/es')['ElPopover']
+    ElRow: typeof import('element-plus/es')['ElRow']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSegmented: typeof import('element-plus/es')['ElSegmented']
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
+    ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     EmojiPicker: typeof import('./../components/Comment/EmojiPicker.vue')['default']
     Footer: typeof import('./../components/Layout/Footer/index.vue')['default']
     Fullscreen: typeof import('./../components/Fullscreen/index.vue')['default']
@@ -83,5 +87,8 @@ declare module 'vue' {
     ToTop: typeof import('./../components/ToTop/index.vue')['default']
     Wave: typeof import('./../components/Wave/index.vue')['default']
     WelcomeCharacter: typeof import('./../components/WelcomeCharacter/index.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

@@ -7,8 +7,7 @@ import { ApiResponse } from "@/types";
 export const useServiceStore = defineStore("service", () => {
   // 后端服务是否可用
   const isServiceAvailable = ref(false)
-  // 服务模式：'off' | 'on'
-  const serviceMode = ref<"off" | "on">("off")
+  const isChecked = ref<boolean>(false)
 
   // 检查后端服务是否可用
   const checkService = async () => {
@@ -16,11 +15,9 @@ export const useServiceStore = defineStore("service", () => {
       const res = await healthCheck()
       if (res.code === 200) {
         isServiceAvailable.value = true
-        serviceMode.value = "on"
       }
     } catch (err) {
       isServiceAvailable.value = false
-      serviceMode.value = "off"
     }
   }
 
@@ -46,7 +43,7 @@ export const useServiceStore = defineStore("service", () => {
 
   return {
     isServiceAvailable,
-    serviceMode,
+    isChecked,
     checkService,
     requestOrRead,
   };

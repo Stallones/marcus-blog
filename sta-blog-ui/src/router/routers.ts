@@ -10,7 +10,7 @@ export const constantRouter = [
                 component: () => import('@/views/Home/index.vue'),
                 name: 'home',
                 meta: {
-                    title: 'Ruyu-blog | 不断追求完美的开源博客',
+                    title: 'marcus-blog | 不断追求完美的开源博客',
                 }
             },
             // 时间轴

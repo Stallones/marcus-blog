@@ -1,10 +1,10 @@
 <template>
-  <div v-if="checkOK">
+  <div v-if="useService.isChecked">
     <router-view></router-view>
   </div>
   <!-- 全局loading -->
   <loading></loading>
-  <!-- <Music /> -->
+  <Music />
   <DevToolsBlocker :enableDevToolsBlocker="true" />
   <ContextMenu />
 </template>
@@ -19,12 +19,11 @@ import { useServiceStore } from "./store/modules/service";
 
 const useService = useServiceStore()
 const useWebsite = useWebsiteStore()
-const checkOK = ref(false)
 
 onMounted(async () => {
   //服务状态
   await useService.checkService()
-  checkOK.value = true
+  useService.isChecked = true
   //网站信息
   useWebsite.getInfo()
 });
