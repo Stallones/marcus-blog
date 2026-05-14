@@ -1,11 +1,9 @@
 import http from "@/utils/http.ts";
-import { ApiResponse, Article } from "@/types";
+import { ApiResponse } from "@/types";
 
 // 获取文章详细
-export const getArticleDetail = (
-  id: string | string[]
-): Promise<ApiResponse<Article>> => {
-  return http.request({
+export const getArticleDetail = (id: string) => {
+  return http({
     url: `/article/detail/${id}`,
     method: "get",
   });
@@ -13,50 +11,48 @@ export const getArticleDetail = (
 
 // 获取评论
 export const getComment = (
-  type: number,
-  typeId: number,
-  pageNum: string,
-  pageSize: string
+  commentType: number,
+  commentPId: number,
+  pageNum: number,
+  pageSize: number
 ) => {
-  return http.request({
+  return http({
     url: "/comment/getComment",
     method: "get",
     params: {
-      type,
-      typeId,
+      commentType,
+      commentPId,
       pageNum,
       pageSize,
     },
-  }) as Promise<ApiResponse<any>>;
+  });
 };
 
 // 用户添加评论
 export const addComment = (data: object) => {
-  return http.request({
+  return http({
     url: "/comment/auth/add/comment",
     method: "post",
     data,
-  }) as Promise<ApiResponse<any>>;
+  });
 };
 
 // 时间轴
-export const getTimeLine = (): Promise<ApiResponse<any>> => {
-  return http.request({
+export const getTimeLine = () => {
+  return http({
     url: "/article/timeLine",
     method: "get",
-  }) as Promise<ApiResponse<any>>;
+  });
 };
 
 // 查询不同类型下的文章列表
-export function whereArticleList(
-  type: String,
-  mid: Number
-): Promise<ApiResponse<Article[]>> {
-  return http.get(`/article/archive`, {
+export const whereArticleList = (commentType: string, commentPId: number) => {
+  return http({
+    url: "/article/archive",
     method: "get",
-    params: { type, mid },
-  }) as Promise<ApiResponse<Article[]>>;
-}
+    params: { commentType, commentPId },
+  });
+};
 
 // 文章访问量+1
 export function addArticleVisit(id: String): Promise<ApiResponse<any>> {

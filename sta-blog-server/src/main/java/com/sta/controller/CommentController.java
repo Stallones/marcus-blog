@@ -42,20 +42,20 @@ public class CommentController {
 
     @Operation(summary = "获取评论")
     @Parameters({
-            @Parameter(name = "type", description = "评论类型", required = true),
-            @Parameter(name = "typeId", description = "评论id", required = true),
+            @Parameter(name = "commentType", description = "评论类型 文章  或  留言板", required = true),
+            @Parameter(name = "commentPid", description = "评论id", required = true),
             @Parameter(name = "pageNum", description = "页码", required = true),
             @Parameter(name = "pageSize", description = "每页数量", required = true)
     })
     @AccessLimit(seconds = 60, maxCount = 60)
     @GetMapping("/getComment")
     public ResponseResult<PageVO<List<ArticleCommentVO>>> comment(
-            @Valid @NotNull Integer type,
-            @Valid @NotNull Integer typeId,
+            @Valid @NotNull Integer commentType,
+            @Valid @NotNull Integer commentPId,
             @Valid @NotNull Integer pageNum,
             @Valid @NotNull Integer pageSize
     ) {
-        return ControllerUtils.messageHandler((() -> commentService.getComment(type, typeId, pageNum, pageSize)));
+        return ControllerUtils.messageHandler((() -> commentService.getComment(commentType, commentPId, pageNum, pageSize)));
     }
 
     @CheckBlacklist

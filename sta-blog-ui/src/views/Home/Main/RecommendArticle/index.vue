@@ -12,29 +12,24 @@ const recommendArticles = ref<any[]>([]);
 
 const modules = ref([Navigation, Pagination, Autoplay]);
 
-const serviceMode = useServiceStore().serviceMode;
+const useService = useServiceStore();
 
-function loadContent() {
-  // if (serviceMode === "on") {
-    getRecommendArticleList().then((res: any) => {
-      // 过滤内容
-      res.data = res.data.map((item: any) => {
-        item.articleContent = item.articleContent.replace(
-          /[*#>`~\-\\[\]()\s]|(\n\n)/g,
-          ""
-        );
-        // 提取前 50 个字符
-        item.articleContent = item.articleContent.substring(0, 25) + "...";
-        return item;
-      });
-      recommendArticles.value = res.data;
-    });
-  // }
+async function loadContent() {
+  const res: any = await getRecommendArticleList();
+  // 过滤内容 提取前 25 个字符
+  res.data = res.data.map((item: any) => {
+    item.articleContent =
+      item.articleContent
+        .replace(/[*#>`~\-\\[\]()\s]|(\n\n)/g, "")
+        .substring(0, 25) + "...";
+    return item;
+  });
+  recommendArticles.value = res.data;
 }
 </script>
 
 <template>
-  <div v-if="serviceMode === 'on'" class="recommend-article-container">
+  <div v-if="useService.isServiceAvailable" class="recommend-article-container">
     <div>
       <el-divider border-style="dashed" content-position="left">
         <div class="flex items-center">
@@ -74,7 +69,11 @@ function loadContent() {
         <div class="swiper-pagination"></div>
       </swiper>
     </div>
-    <el-skeleton v-if="recommendArticles.length == 0" :rows="5" animated />
+    <el-skeleton
+      v-if="recommendArticles.length == 0"
+      :rows="5"
+      animated
+    />
   </div>
 </template>
 

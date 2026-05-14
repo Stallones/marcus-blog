@@ -30,15 +30,14 @@ const route = useRoute()
 const mode = useColorMode()
 const dialogVisible = ref(false)
 
-const logoutSub = () => {
-  logout().then((res: any) => {
-    if (res.code === 200) {
-      REMOVE_TOKEN()
-      userStore.userInfo = undefined
-      ElMessage.success('退出登录成功')
-      router.push('/')
-    }
-  })
+const logoutSub = async () => {
+  const res: any = await logout();
+  if (res.code === 200) {
+    REMOVE_TOKEN()
+    userStore.userInfo = undefined
+    ElMessage.success('退出登录成功')
+    router.push('/')
+  }
 }
 
 function changeToggle({detail}) {

@@ -26,19 +26,18 @@ const rule = {
   ]
 }
 const userStore = useUserStore()
-function userLogin() {
-  formRef.value.validate((valid) => {
+async function userLogin() {
+  formRef.value.validate(async (valid) => {
     if (valid) {
-      login(form).then((res: any) => {
-        if (res.code === 200) {
-          SET_TOKEN(res.data.token, res.data.expire, form.remember)
-          ElMessage.success('登录成功')
-          router.push('/')
-          userStore.getInfo()
-        } else {
-          ElMessage.error(res.msg)
-        }
-      })
+      const res: any = await login(form);
+      if (res.code === 200) {
+        SET_TOKEN(res.data.token, res.data.expire, form.remember)
+        ElMessage.success('登录成功')
+        router.push('/')
+        userStore.getInfo()
+      } else {
+        ElMessage.error(res.msg)
+      }
     }
   })
 }

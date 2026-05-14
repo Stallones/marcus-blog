@@ -3,7 +3,8 @@ import ArticleList from "../ArticleList/index.vue";
 import { tagList } from "@/apis/tag";
 import { whereArticleList } from "@/apis/article";
 import { useServiceStore } from "@/store/modules/service";
-import { readTagList } from "@/utils/file-reader";
+import { readTagList, readArchiveArticleList } from "@/utils/file-reader";
+import {ARCHIVE_TAG_CONS} from "@/const";
 
 const route = useRoute();
 const useService = useServiceStore()
@@ -54,15 +55,19 @@ watch(
 
 // 文章
 // function getArticle(id: string | string[]) {
-function getArticle(id: Number) {
+async function getArticle(id: Number) {
   const realId = Array.isArray(id) ? id[0] : id;
-  whereArticleList("tag", realId).then((res) => {
-    if (res.code === 200 && res.data !== undefined) {
-      articleList.value = res.data;
-    } else {
-      articleList.value = [];
-    }
-  });
+  const res = await useService.requestOrRead(
+    whereArticleList,
+    readArchiveArticleList,
+    ARCHIVE_TAG_CONS,
+    realId
+  );
+  if (res.code === 200 && res.data !== undefined) {
+    articleList.value = res.data;
+  } else {
+    articleList.value = [];
+  }
 }
 </script>
 
@@ -74,9 +79,9 @@ function getArticle(id: Number) {
       </template>
       <template #content>
         <div class="tags_container">
-          <div class="title" v-if="!isQueryArticle">标签 {{ title }}</div>
-          <div class="title" v-if="isQueryArticle">标签 - {{ title }}</div>
-          <template v-if="!isQueryArticle">
+          <div class="title">标签{{ isQueryArticle ? ' - ' + title : '' }}</div>
+          <!-- <template v-if="!isQueryArticle"> -->
+          <template v-if="true">
             <div class="item_container">
               <template v-for="tag in tags" :key="tag.id">
                 <div

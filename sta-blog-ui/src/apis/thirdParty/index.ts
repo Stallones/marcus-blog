@@ -15,17 +15,14 @@ export const getSoup = () => {
 }
 
 // 打字机-每日鸡汤
-export const getSoupTyping = (typerObj: any) => {
-    fetch(myYiYan)
-        .then(res => {
-            return res.json()
-        })
-        .then(({ hitokoto }) => {
-             new EasyTyper(typerObj, hitokoto, 
-                ()=>{getSoupTyping(typerObj)}, 
-                () => {})
-        })
-        .catch(err => {
-            console.error(err)
-        })
+export const getSoupTyping = async (typerObj: any) => {
+    try {
+        const res = await fetch(myYiYan);
+        const { hitokoto } = await res.json();
+        new EasyTyper(typerObj, hitokoto,
+            () => { getSoupTyping(typerObj) },
+            () => { })
+    } catch (err) {
+        console.error(err)
+    }
 }

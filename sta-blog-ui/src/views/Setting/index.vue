@@ -27,17 +27,16 @@ const emailForm = reactive({
   password: '',
 })
 
-function updateUser() {
-  baseFormRef.value.validate((isValid: boolean) => {
+async function updateUser() {
+  baseFormRef.value.validate(async (isValid: boolean) => {
     if (isValid) {
-      updateUserAccount(accountForm.value).then((resp: any) => {
-        if (resp.code == 200) {
-          ElMessage.success('信息更新成功')
-          userStore.getInfo()
-        } else {
-          ElMessage.error(resp.data.msg)
-        }
-      })
+      const resp: any = await updateUserAccount(accountForm.value);
+      if (resp.code == 200) {
+        ElMessage.success('信息更新成功')
+        userStore.getInfo()
+      } else {
+        ElMessage.error(resp.data.msg)
+      }
     } else ElMessage.warning('请完整填写信息')
   })
 }
@@ -130,19 +129,18 @@ const emailRules: FormRules = {
 
 const centerDialogVisible = ref(false)
 
-function updateEmailFunc(){
+async function updateEmailFunc(){
   if (emailForm.password === ''){
     ElMessage.warning('密码不能为空')
     return
   }
-  updateEmail(emailForm).then((resp: any) => {
-    if(resp.code == 200){
-      ElMessage.success('邮件地址更新成功')
-      emailForm.code = ''
-      userStore.getInfo()
-      centerDialogVisible.value = false
-    }else ElMessage.error(resp.msg)
-  })
+  const resp: any = await updateEmail(emailForm);
+  if(resp.code == 200){
+    ElMessage.success('邮件地址更新成功')
+    emailForm.code = ''
+    userStore.getInfo()
+    centerDialogVisible.value = false
+  }else ElMessage.error(resp.msg)
 }
 
 // 更新邮件
@@ -155,18 +153,17 @@ function modifyEmail(){
 }
 
 // 三方登录绑定邮箱
-function thirdPartyLoginEmail(){
-  emailFormRef.value.validate((isValid: boolean) => {
+async function thirdPartyLoginEmail(){
+  emailFormRef.value.validate(async (isValid: boolean) => {
     if (isValid) {
       emailForm.password = '第三方登录'
       // 发送请求
-      updateThirdEmail(emailForm).then((resp: any) => {
-        if(resp.code == 200){
-          ElMessage.success('邮件地址更新成功')
-          emailForm.code = ''
-          userStore.getInfo()
-        }else ElMessage.error(resp.msg)
-      })
+      const resp: any = await updateThirdEmail(emailForm);
+      if(resp.code == 200){
+        ElMessage.success('邮件地址更新成功')
+        emailForm.code = ''
+        userStore.getInfo()
+      }else ElMessage.error(resp.msg)
     } else ElMessage.warning('请完整填写信息')
   })
 }
@@ -180,28 +177,27 @@ const coldTime = ref(0)
 /**
  * 获取验证码
  */
-function getEmailCode(){
+async function getEmailCode(){
   if (emailForm.email === userStore.userInfo?.email){
     ElMessage.warning('邮件地址未更改')
     return
   }
   if(isEmailValid){
     coldTime.value = 60
-    sendEmail(emailForm.email, 'resetEmail').then((resp: any) => {
-      if (resp.code == 200) {
-        ElMessage.success(`验证码已发送到邮箱：${emailForm.email}，请注意查收`)
-        const intervalId = setInterval(() => {
-          if (coldTime.value === 0) {
-            clearInterval(intervalId);
-          } else {
-            coldTime.value--;
-          }
-        }, 1000)
-      } else {
-        ElMessage.error(resp.msg)
-        coldTime.value = 0
-      }
-    })
+    const resp: any = await sendEmail(emailForm.email, 'resetEmail');
+    if (resp.code == 200) {
+      ElMessage.success(`验证码已发送到邮箱：${emailForm.email}，请注意查收`)
+      const intervalId = setInterval(() => {
+        if (coldTime.value === 0) {
+          clearInterval(intervalId);
+        } else {
+          coldTime.value--;
+        }
+      }, 1000)
+    } else {
+      ElMessage.error(resp.msg)
+      coldTime.value = 0
+    }
   }
 }
 </script>

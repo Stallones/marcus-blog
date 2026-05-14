@@ -10,28 +10,28 @@
         <div class="p-1">
           <div
             class="head_title"
-            :style="`background-image: url('${articleDetail.articleCover}')`"
+            :style="`background-image: url('${articleVO.articleCover}')`"
           >
             <div class="head_title_text">
               <div class="classify">
-                <div>{{ articleDetail.categoryName }}</div>
-                <div class="tag" v-for="tag in articleDetail.tags">
+                <div>{{ articleVO.categoryName }}</div>
+                <div class="tag" v-for="tag in articleVO.tags">
                   # {{ tag.tagName }}
                 </div>
               </div>
-              <div class="title">{{ articleDetail.articleTitle }}</div>
+              <div class="title">{{ articleVO.articleTitle }}</div>
               <div class="statistics">
                 <div>字数统计:{{ countMd }}</div>
               </div>
               <div class="statistics">
-                <div>访问量:{{ articleDetail.visitCount }}</div>
-                <div>评论数:{{ articleDetail.commentCount }}</div>
-                <div>点赞量:{{ articleDetail.likeCount }}</div>
-                <div>收藏量:{{ articleDetail.favoriteCount }}</div>
+                <div>访问量:{{ articleVO.visitCount }}</div>
+                <div>评论数:{{ articleVO.commentCount }}</div>
+                <div>点赞量:{{ articleVO.likeCount }}</div>
+                <div>收藏量:{{ articleVO.favoriteCount }}</div>
               </div>
               <div class="time">
-                <div>发布：{{ articleDetail.createTime }}</div>
-                <div>更新：{{ articleDetail.updateTime }}</div>
+                <div>发布：{{ articleVO.createTime }}</div>
+                <div>更新：{{ articleVO.updateTime }}</div>
               </div>
             </div>
           </div>
@@ -41,7 +41,7 @@
               <MdPreview
                 :editorId="id"
                 :theme="mode"
-                :modelValue="articleDetail.articleContent"
+                :modelValue="articleVO.articleContent"
                 :on-html-changed="mdHtml"
               />
             </div>
@@ -90,22 +90,22 @@
           <!-- 尾部标签与点赞收藏分享 -->
           <div style="display: flex; justify-content: space-between">
             <div v-if="showTag" class="tag">
-              <template v-for="tag in articleDetail.tags" :key="tag.id">
+              <template v-for="tag in articleVO.tags" :key="tag.id">
                 <div @click="$router.push(`/tags/${tag.id}`)">
                   # {{ tag.tagName }}
                 </div>
               </template>
             </div>
             <div v-if="showLikFav" class="like">
-              <div @click="likeBtn(articleDetail)">
+              <div @click="likeBtn(articleVO)">
                 <SvgIcon v-show="!like" name="like" />
                 <SvgIcon v-show="like" name="like-selected" />
-                <span>{{ articleDetail.likeCount }}</span>
+                <span>{{ articleVO.likeCount }}</span>
               </div>
-              <div v-if="showLikFav" @click="collectionBtn(articleDetail)">
+              <div v-if="showLikFav" @click="collectionBtn(articleVO)">
                 <SvgIcon v-show="!collection" name="collection" />
                 <SvgIcon v-show="collection" name="collection-selected" />
-                <span>{{ articleDetail.favoriteCount }}</span>
+                <span>{{ articleVO.favoriteCount }}</span>
               </div>
               <div @click="copyToClipboard">
                 <SvgIcon name="share" />
@@ -116,9 +116,9 @@
           <div v-if="showTag">
             <div class="tag" style="display: flex; justify-content: left">
               <div
-                @click="$router.push(`/category/${articleDetail.categoryId}`)"
+                @click="$router.push(`/category/${articleVO.categoryId}`)"
               >
-                {{ articleDetail.categoryName }}
+                {{ articleVO.categoryName }}
               </div>
             </div>
           </div>
@@ -143,36 +143,36 @@
           <div class="goOn">
             <!-- 上一篇 -->
             <div>
-              <div v-if="articleDetail.preArticleId > 0">
+              <div v-if="articleVO.preArticleId > 0">
                 <el-link
                   @click="
-                    $router.push(`/article/${articleDetail.preArticleId}`)
+                    $router.push(`/article/${articleVO.preArticleId}`)
                   "
                 >
-                  上一篇：{{ articleDetail.preArticleTitle }}
+                  上一篇：{{ articleVO.preArticleTitle }}
                 </el-link>
               </div>
             </div>
             <!-- 下一篇 -->
             <div>
-              <div v-if="articleDetail.nextArticleId > 0">
+              <div v-if="articleVO.nextArticleId > 0">
                 <el-link
                   @click="
-                    $router.push(`/article/${articleDetail.nextArticleId}`)
+                    $router.push(`/article/${articleVO.nextArticleId}`)
                   "
                 >
-                  下一篇：{{ articleDetail.nextArticleTitle }}
+                  下一篇：{{ articleVO.nextArticleTitle }}
                 </el-link>
               </div>
             </div>
           </div>
           <!-- 用户评论 -->
           <Comment
-            :server-on="useService.isServiceAvailable"
-            :type="1"
-            :like-type="2"
-            :author-id="articleDetail.userId"
-            :type-id="Number(articleDetail.id)"
+            :serverOn="useService.isServiceAvailable"
+            :authorId="articleVO.userId"
+            :commentType=COMMENT_ARTICLE_CONS
+            :commentPId="articleVO.id"
+            :liketype="2"
           />
         </div>
       </template>
@@ -186,7 +186,7 @@
 
           <div v-if="showRandom">
             <RandomArticle
-              :categoryId="articleDetail.categoryId.toString()"
+              :categoryId="articleVO.categoryId.toString()"
               :articleId="route.params.id as string || undefined"
               title="相关推荐"
               prefix-icon="query_tasks"
@@ -213,28 +213,28 @@
     >
       <div
         class="head_title"
-        :style="`background-image: url('${articleDetail.articleCover}')`"
+        :style="`background-image: url('${articleVO.articleCover}')`"
       >
         <div class="head_title_text">
           <div class="classify">
-            <div>{{ articleDetail.categoryName }}</div>
-            <div class="tag" v-for="tag in articleDetail.tags">
+            <div>{{ articleVO.categoryName }}</div>
+            <div class="tag" v-for="tag in articleVO.tags">
               # {{ tag.tagName }}
             </div>
           </div>
-          <div class="title">{{ articleDetail.articleTitle }}</div>
+          <div class="title">{{ articleVO.articleTitle }}</div>
           <div class="statistics">
             <div>字数统计:{{ countMd }}</div>
           </div>
           <div class="statistics">
-            <div>访问量:{{ articleDetail.visitCount }}</div>
-            <div>评论数:{{ articleDetail.commentCount }}</div>
-            <div>点赞量:{{ articleDetail.likeCount }}</div>
-            <div>收藏量:{{ articleDetail.favoriteCount }}</div>
+            <div>访问量:{{ articleVO.visitCount }}</div>
+            <div>评论数:{{ articleVO.commentCount }}</div>
+            <div>点赞量:{{ articleVO.likeCount }}</div>
+            <div>收藏量:{{ articleVO.favoriteCount }}</div>
           </div>
           <div class="time">
-            <div>发布：{{ articleDetail.createTime }}</div>
-            <div>更新：{{ articleDetail.updateTime }}</div>
+            <div>发布：{{ articleVO.createTime }}</div>
+            <div>更新：{{ articleVO.updateTime }}</div>
           </div>
         </div>
       </div>
@@ -244,7 +244,7 @@
           <MdPreview
             :editorId="id"
             :theme="mode"
-            :modelValue="articleDetail.articleContent"
+            :modelValue="articleVO.articleContent"
             :on-html-changed="mdHtml"
           />
         </div>
@@ -293,22 +293,22 @@
       <!-- 尾部标签与点赞收藏分享 -->
       <div style="display: flex; justify-content: space-between">
         <div v-if="showTag" class="tag">
-          <template v-for="tag in articleDetail.tags" :key="tag.id">
+          <template v-for="tag in articleVO.tags" :key="tag.id">
             <div @click="$router.push(`/tags/${tag.id}`)">
               # {{ tag.tagName }}
             </div>
           </template>
         </div>
         <div class="like">
-          <div v-if="showLikFav" @click="likeBtn(articleDetail)">
+          <div v-if="showLikFav" @click="likeBtn(articleVO)">
             <SvgIcon v-show="!like" name="like" />
             <SvgIcon v-show="like" name="like-selected" />
-            <span>{{ articleDetail.likeCount }}</span>
+            <span>{{ articleVO.likeCount }}</span>
           </div>
-          <div v-if="showLikFav" @click="collectionBtn(articleDetail)">
+          <div v-if="showLikFav" @click="collectionBtn(articleVO)">
             <SvgIcon v-show="!collection" name="collection" />
             <SvgIcon v-show="collection" name="collection-selected" />
-            <span>{{ articleDetail.favoriteCount }}</span>
+            <span>{{ articleVO.favoriteCount }}</span>
           </div>
           <div @click="copyToClipboard">
             <SvgIcon name="share" />
@@ -318,8 +318,8 @@
       </div>
       <div v-if="showTag">
         <div class="tag" style="display: flex; justify-content: left">
-          <div @click="$router.push(`/category/${articleDetail.categoryId}`)">
-            {{ articleDetail.categoryName }}
+          <div @click="$router.push(`/category/${articleVO.categoryId}`)">
+            {{ articleVO.categoryName }}
           </div>
         </div>
       </div>
@@ -344,21 +344,21 @@
       <div class="goOn">
         <!-- 上一篇 -->
         <div>
-          <div v-if="articleDetail.preArticleId > 0">
+          <div v-if="articleVO.preArticleId > 0">
             <el-link
-              @click="$router.push(`/article/${articleDetail.preArticleId}`)"
+              @click="$router.push(`/article/${articleVO.preArticleId}`)"
             >
-              上一篇：{{ articleDetail.preArticleTitle }}
+              上一篇：{{ articleVO.preArticleTitle }}
             </el-link>
           </div>
         </div>
         <!-- 下一篇 -->
         <div>
-          <div v-if="articleDetail.nextArticleId > 0">
+          <div v-if="articleVO.nextArticleId > 0">
             <el-link
-              @click="$router.push(`/article/${articleDetail.nextArticleId}`)"
+              @click="$router.push(`/article/${articleVO.nextArticleId}`)"
             >
-              下一篇：{{ articleDetail.nextArticleTitle }}
+              下一篇：{{ articleVO.nextArticleTitle }}
             </el-link>
           </div>
         </div>
@@ -407,16 +407,17 @@ import { addArticleVisit, getArticleDetail } from "@/apis/article";
 import { cancelFavorite, userFavorite, isFavorite } from "@/apis/favorite";
 import { cancelLike, isLike, userLike } from "@/apis/like";
 import DirectoryCard from "./DirectoryCard/index.vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage} from "element-plus";
 import router from "@/router";
 import useWebsiteStore from "@/store/modules/website.ts";
 import { useColorMode, useTitle } from "@vueuse/core";
 import MobileDirectoryCard from "./MobileDirectoryCard/index.vue";
 import { throttle } from "@/utils/optimize.ts";
-import { ARTICLE_VISIT_PREFIX } from "@/const/Visits";
+import { ARTICLE_VISIT_PREFIX, COMMENT_ARTICLE_CONS } from "@/const";
 import { useServiceStore } from "@/store/modules/service";
 import payQr from "@/assets/pay/a77178025b790601a8a0a8361718b148.png";
 import { readArticleDetail } from "@/utils/file-reader";
+import { ArticleVO } from "@/types";
 
 // .env
 const env = import.meta.env;
@@ -429,30 +430,10 @@ const mode = computed(() =>
   colorMode.value === "auto" ? "light" : colorMode.value
 );
 
+const articleVO = ref<ArticleVO>({} as ArticleVO);
 const id = "preview-only";
 const scrollElement = document.documentElement;
 const isShowMoveCatalog = ref(false);
-
-const articleDetail = ref({
-  articleCover: "",
-  articleTitle: "",
-  articleContent: undefined as string | undefined,
-  categoryName: "",
-  categoryId: "",
-  tags: [] as { id: number; tagName: string }[],
-  visitCount: 0,
-  commentCount: 0,
-  likeCount: 0,
-  favoriteCount: 0,
-  createTime: "",
-  updateTime: "",
-  userId: 0,
-  id: "0",
-  preArticleId: 0,
-  preArticleTitle: "",
-  nextArticleId: 0,
-  nextArticleTitle: "",
-});
 
 // 是否加载
 const showTag = ref(false); //标签
@@ -479,18 +460,19 @@ async function getArticleDetailById() {
   const res = await useService.requestOrRead(
     getArticleDetail,
     readArticleDetail,
-    route.params.id
+    route.params.id as string
   );
-  if (!res.data) {
+  if (res.code !== 200) {
     ElMessage.warning({
-      message: "文章不存在",
+      message: res.msg,
     });
     // 跳转回去
     router.push({ path: "/" });
     return;
   }
+  articleVO.value = res.data as ArticleVO;
   // 设置title
-  useTitle(res.data.title);
+  useTitle(articleVO.value.articleTitle);
   if (route.params.id) {
     if (!sessionStorage.getItem(ARTICLE_VISIT_PREFIX + route.params.id)) {
       // 避免重复刷新
@@ -504,14 +486,14 @@ async function getArticleDetailById() {
     }
   }
   // 时间去掉时分秒
-  res.data.createTime = res.data.createTime?.split(" ")[0];
-  res.data.updateTime = res.data.updateTime?.split(" ")[0];
-  articleDetail.value = res.data as any;
+  articleVO.value.createTime = articleVO.value.createTime?.split(" ")[0];
+  articleVO.value.updateTime = articleVO.value.updateTime?.split(" ")[0];
+  // articleDetail.value = res.data as any;
   showTag.value = true;
   //服务可用
   if (useService.isServiceAvailable) {
     // 控制 随机文章
-    showRandom.value = true && articleDetail.value.categoryId !== "";
+    showRandom.value = true;
     //控制 尾部标签与点赞收藏分享、用户评论的展示
     showLikFav.value = true;
     showComment.value = true;
@@ -547,7 +529,7 @@ function countWords(count: number) {
 // 分享
 const copyToClipboard = async () => {
   try {
-    const content = `欢迎访问博客文章：${articleDetail.value.articleTitle} \n通往地址：${env.VITE_FRONTEND_URL}${route.path}`;
+    const content = `欢迎访问博客文章：${articleVO.value.articleTitle} \n通往地址：${env.VITE_FRONTEND_URL}${route.path}`;
     // 替换为你要分享的实际内容
     await navigator.clipboard.writeText(content);
     ElMessage.success("已复制分享链接");
@@ -557,87 +539,81 @@ const copyToClipboard = async () => {
 };
 
 // 公告
-function announcement() {
-  ElMessageBox.alert(
-    `<pre>${websiteStore.webInfo?.sidebarAnnouncement}</pre>`,
-    "公告",
-    {
-      // if you want to disable its autofocus
-      // autofocus: false,
-      confirmButtonText: "关闭",
-      closeOnPressEscape: true,
-      dangerouslyUseHTMLString: true,
-    }
-  );
-}
+// function announcement() {
+//   ElMessageBox.alert(
+//     `<pre>${websiteStore.webInfo?.sidebarAnnouncement}</pre>`,
+//     "公告",
+//     {
+//       // if you want to disable its autofocus
+//       // autofocus: false,
+//       confirmButtonText: "关闭",
+//       closeOnPressEscape: true,
+//       dangerouslyUseHTMLString: true,
+//     }
+//   );
+// }
 
 // 收藏标记
 const collection = ref(false);
 // 点赞标记
 const like = ref(false);
 
-const collectionBtn = (detail: typeof articleDetail.value) => {
+const collectionBtn = async (articleVO: ArticleVO) => {
   if (collection.value) {
     // 取消收藏
-    cancelFavorite(1, articleDetail.value.id).then((res: any) => {
-      if (res.code === 200) {
-        detail.favoriteCount -= 1;
-        collection.value = false;
-        ElMessage.info("取消收藏");
-      } else {
-        ElMessage.error(res.msg);
-      }
-    });
+    const res: any = await cancelFavorite(1, articleVO.id.toString());
+    if (res.code === 200) {
+      articleVO.favoriteCount -= 1;
+      collection.value = false;
+      ElMessage.info("取消收藏");
+    } else {
+      ElMessage.error(res.msg);
+    }
   } else {
     // 收藏
-    userFavorite(1, articleDetail.value.id).then((res: any) => {
-      if (res.code === 200) {
-        detail.favoriteCount += 1;
-        collection.value = true;
-        ElMessage.success("收藏成功");
-      } else {
-        ElMessage.error(res.msg);
-      }
-    });
+    const res: any = await userFavorite(1, articleVO.id.toString());
+    if (res.code === 200) {
+      articleVO.favoriteCount += 1;
+      collection.value = true;
+      ElMessage.success("收藏成功");
+    } else {
+      ElMessage.error(res.msg);
+    }
   }
 };
 
-function likeBtn(detail: typeof articleDetail.value) {
+async function likeBtn(articleVO: ArticleVO) {
   if (like.value) {
-    cancelLike(1, articleDetail.value.id).then((res: any) => {
-      if (res.code === 200) {
-        detail.likeCount -= 1;
-        like.value = false;
-        ElMessage.info("我会继续努力的");
-      } else {
-        ElMessage.error(res.msg);
-      }
-    });
+    const res: any = await cancelLike(1, articleVO.id.toString());
+    if (res.code === 200) {
+      articleVO.likeCount -= 1;
+      like.value = false;
+      ElMessage.info("我会继续努力的");
+    } else {
+      ElMessage.error(res.msg);
+    }
   } else {
-    userLike(1, articleDetail.value.id).then((res: any) => {
-      if (res.code === 200) {
-        detail.likeCount += 1;
-        like.value = true;
-        ElMessage.success("感谢你的认可");
-      } else {
-        ElMessage.error(res.msg);
-      }
-    });
+    const res: any = await userLike(1, articleVO.id.toString());
+    if (res.code === 200) {
+      articleVO.likeCount += 1;
+      like.value = true;
+      ElMessage.success("感谢你的认可");
+    } else {
+      ElMessage.error(res.msg);
+    }
   }
 }
 
 // 是否收藏
-function isFavoriteFunc() {
-  isFavorite(1, articleDetail.value.id).then((res: any) => {
-    collection.value = res.data === true;
-  });
+async function isFavoriteFunc() {
+  const res: any = await isFavorite(1, articleVO.value.id.toString());
+  collection.value = res.data === true;
 }
 
 // 是否点赞
-function isLikeFunc() {
-  isLike(1, articleDetail.value.id).then((res: any) => {
-    like.value = res.code === 200;
-  });
+async function isLikeFunc() {
+  const res: any = await isLike(1, articleVO.value.id.toString());
+  like.value = res.code === 200;
 }
 
 window.addEventListener(

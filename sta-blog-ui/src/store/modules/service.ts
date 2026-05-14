@@ -2,6 +2,7 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
 import { healthCheck } from "@/apis/website"
+import { ApiResponse } from "@/types";
 
 export const useServiceStore = defineStore("service", () => {
   // 后端服务是否可用
@@ -32,10 +33,10 @@ export const useServiceStore = defineStore("service", () => {
   // }
 
   const requestOrRead = <T, Args extends any[]>(
-    requestFn: (...args: Args) => Promise<T>,
-    readFn: (...args: Args) => Promise<T>,
+    requestFn: (...args: Args) => Promise<ApiResponse<T>>,
+    readFn: (...args: Args) => Promise<ApiResponse<T>>,
     ...args: Args
-  ): Promise<T> => {
+  ): Promise<ApiResponse<T>> => {
     if (isServiceAvailable.value) {
       return requestFn(...args);
     } else {

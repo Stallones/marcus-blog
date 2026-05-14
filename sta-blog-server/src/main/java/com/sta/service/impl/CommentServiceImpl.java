@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.sta.constants.RedisConst;
 import com.sta.constants.SQLConst;
+import com.sta.constants.WebsiteInfoConst;
 import com.sta.domain.dto.CommentIsCheckDTO;
 import com.sta.domain.dto.SearchCommentDTO;
 import com.sta.domain.dto.UserCommentDTO;
@@ -67,13 +68,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private LikeMapper likeMapper;
 
     @Override
-    public PageVO<List<ArticleCommentVO>> getComment(Integer type, Integer typeId, Integer pageNum, Integer pageSize) {
+    public PageVO<List<ArticleCommentVO>> getComment(Integer commentType, Integer commentPId, Integer pageNum, Integer pageSize) {
         // 查询父评论
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
                 .orderByDesc(Comment::getCreateTime)
-                .eq(Comment::getType, type)
-                .eq(Comment::getTypeId, typeId)
+                .eq(Comment::getType, commentType)
+                .eq(Comment::getTypeId, commentPId)
                 .eq(Comment::getIsCheck, SQLConst.COMMENT_IS_CHECK)
                 .isNull(Comment::getParentId);
         Page<Comment> page = new Page<>(pageNum, pageSize);
@@ -83,8 +84,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         LambdaQueryWrapper<Comment> childQueryWrapper = new LambdaQueryWrapper<>();
         childQueryWrapper
                 .orderByDesc(Comment::getCreateTime)
-                .eq(Comment::getType, type)
-                .eq(Comment::getTypeId, typeId)
+                .eq(Comment::getType, commentType)
+                .eq(Comment::getTypeId, commentPId)
                 .eq(Comment::getIsCheck, SQLConst.COMMENT_IS_CHECK)
                 .isNotNull(Comment::getParentId);
         List<Comment> childComment = commentMapper.selectList(childQueryWrapper);
@@ -95,8 +96,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                     comment.setChildComment(getChildComment(commentsVOS, comment.getId()));
                     comment.setChildCommentCount(getChildCommentCount(commentsVOS, comment.getId()));
                     comment.setParentCommentCount(this.count(new LambdaQueryWrapper<Comment>()
-                            .eq(Comment::getType, type)
-                            .eq(Comment::getTypeId, typeId)
+                            .eq(Comment::getType, commentType)
+                            .eq(Comment::getTypeId, commentPId)
                             .eq(Comment::getIsCheck, SQLConst.COMMENT_IS_CHECK)
                             .isNull(Comment::getParentId)));
                 }
@@ -104,8 +105,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 总评论数量
         LambdaQueryWrapper<Comment> countWrapper = new LambdaQueryWrapper<>();
         countWrapper
-                .eq(Comment::getType, type)
-                .eq(Comment::getTypeId, typeId)
+                .eq(Comment::getType, commentType)
+                .eq(Comment::getTypeId, commentPId)
                 .eq(Comment::getIsCheck, SQLConst.COMMENT_IS_CHECK);
         return new PageVO<>(collect, commentMapper.selectCount(countWrapper));
     }
@@ -160,21 +161,21 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 评论
         if (StringUtils.isNull(commentDTO.getReplyId())) {
 
-            if ((commentDTO.getType() == 1 && !articleEmailNotice) || commentDTO.getType() == 2 && !messageEmailNotice)
+            if ((WebsiteInfoConst.COMMENT_ARTICLE_CONS.equals(commentDTO.getType()) && !articleEmailNotice) || (WebsiteInfoConst.COMMENT_MESSAGE_CONS.equals(commentDTO.getType()) && !messageEmailNotice))
                 return ResponseResult.success();
 
             Map<String, Object> selectWhereMap = new HashMap<>();
             selectWhereMap.put("commentType", commentDTO.getType());
             selectWhereMap.put("commentId", comment.getId());
 
-            // 留言提示对应发布留言的用户
-            if (commentDTO.getType() == 1) {
+            // 文章评论提示站长
+            if (WebsiteInfoConst.COMMENT_ARTICLE_CONS.equals(commentDTO.getType())) {
                 if (Objects.equals(fromUser, user.getEmail())) return ResponseResult.success();
                 // 发邮箱给站长
                 publicService.sendEmail(MailboxAlertsEnum.COMMENT_NOTIFICATION_EMAIL.getCodeStr(), fromUser, selectWhereMap);
             }
 
-            if (commentDTO.getType() == 2) {
+            if (WebsiteInfoConst.COMMENT_MESSAGE_CONS.equals(commentDTO.getType())) {
                 // 查出回复的该留言用户的邮箱
                 LeaveWord leaveWord = leaveWordMapper.selectOne(new LambdaQueryWrapper<LeaveWord>().eq(LeaveWord::getId, commentDTO.getTypeId()));
                 User replyUser = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getId, leaveWord.getUserId()));
@@ -188,7 +189,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         // 回复评论
         if (Objects.nonNull(commentDTO.getReplyId())) {
             User replyUser = userMapper.selectById(commentDTO.getReplyUserId());
-            if ((commentDTO.getType() == 1 && !articleReplyNotice) || (commentDTO.getType() == 2 && !messageReplyNotice))
+            if ((WebsiteInfoConst.COMMENT_ARTICLE_CONS.equals(commentDTO.getType()) && !articleReplyNotice) || (WebsiteInfoConst.COMMENT_MESSAGE_CONS.equals(commentDTO.getType()) && !messageReplyNotice))
                 return ResponseResult.success();
 
             // 如果用户回复自己并且回复人是站长就无需提醒

@@ -3,13 +3,16 @@ import { MdPreview } from "md-editor-v3";
 import "md-editor-v3/lib/preview.css";
 import EmojiPicker from "./EmojiPicker.vue";
 import { heo } from "@/utils/O.o/heo.ts";
-
 import { addComment, getComment } from "@/apis/article";
 import { cancelLike, isLike, userLike } from "@/apis/like";
 import ChildComment from "./ChildComment.vue";
 import { ElMessage } from "element-plus";
 import { useColorMode } from "@vueuse/core";
-import { useServiceStore } from "@/store/modules/service";
+import usePaginationStore from "@/store/modules/pagination";
+import {CommentVO} from "@/types";
+
+const usePagination = usePaginationStore();
+const commentPagination = usePagination.commentPagination;
 
 const props = defineProps({
   serverOn: {
@@ -18,21 +21,29 @@ const props = defineProps({
   },
   authorId: {
     type: Number,
-    required: true,
-  },
-  typeId: {
-    type: Number,
-    required: true,
+    default: 0,
+    // required: true,
   },
   // 是否显示头部添加框
   isShowHeader: {
     type: Boolean,
     default: true,
   },
-  // 评论类型
-  type: Number,
-  // 点赞类型
-  likeType: Number,
+  // 评论类型 1-文章 2-留言
+  commentType: {
+    type: Number,
+    default: 1,
+  },
+  //评论类型 1-文章id  2-留言id
+  commentPId: {
+    type: Number,
+    default: 0,
+    // required: true,
+  },
+  // 点赞类型 1-文章,2-评论,3-留言板
+  likeType: {
+    type: Number,
+  },
 });
 
 const placeholderText = ref("留下你的精彩评论吧！");
@@ -50,7 +61,7 @@ const myInput = ref();
 const isLoading = ref(false);
 
 // 添加一个 ref 来跟踪当前活动的评论框
-const activeCommentId = ref(null);
+const activeCommentId = ref();
 
 // 添加设置活动评论框的方法
 function setActiveComment(id: number | null) {
@@ -103,15 +114,18 @@ const commentsTotal = ref(0);
 const isPreview = ref(false);
 // 是否展示全部子评论
 const showAllChildComments = ref(false);
-// 查询评论数
-const pageSize = ref(2);
 
 const mode = useColorMode();
-const serviceStore = useServiceStore();
 
 // 默认选中第一个
 onMounted(() => {
-  getComments(props.typeId, "1", String(pageSize.value));
+  if (!props.commentPId || props.commentPId === 0) return; // 跳过无效值
+  getComments(
+    props.commentType,
+    props.commentPId,
+    commentPagination.current,
+    commentPagination.pageSize
+  );
 });
 
 // 用户预览
@@ -177,7 +191,13 @@ function handleComments(commentContent: object[]) {
 
 // 更多评论
 const moreComment = () => {
-  getComments(props.typeId, "1", String((pageSize.value += 3)));
+  commentPagination.pageSize += 3;
+  getComments(
+    props.commentType,
+    props.commentPId,
+    commentPagination.current,
+    commentPagination.pageSize
+  );
 };
 
 //  递归子评论方法
@@ -247,99 +267,110 @@ function closeAllReplyBoxes(comments: any[]) {
 }
 
 watch(
-  () => props.typeId,
-  (value) => {
-    getComments(value, "1", String(pageSize.value));
+  () => props.commentPId,
+  (pid) => {
+    getComments(
+      props.commentType,
+      pid,
+      commentPagination.current,
+      commentPagination.pageSize
+    );
   }
 );
 
 // 获取文章评论
-function getComments(typeId: number, pageNum: string, pageSize: string) {
+async function getComments(
+  type: number,
+  pid: number,
+  pageNum: number,
+  pageSize: number
+) {
   //服务在线
-  if (props.serverOn)
-    getComment(<number>props.type, typeId, pageNum, pageSize).then((res) => {
-      if (res.code == 200) {
-        isLoading.value = true;
-        comments.value = res.data.page;
-        commentsTotal.value = res.data.total;
-        handleComments(res.data.page);
-        isLikeFunc();
-      }
-    });
+  if (props.serverOn) {
+    const res = await getComment(type, pid, pageNum, pageSize);
+    if (res.code == 200) {
+      isLoading.value = true;
+      comments.value = res.data.page;
+      commentsTotal.value = res.data.total;
+      handleComments(res.data.page);
+      isLikeFunc();
+    }
+  }
 }
 
 // 点赞
-function likeBtn(comment: object) {
-  userLike(<number>props.likeType, comment.id).then((res) => {
-    if (res.code === 200) {
-      comment.isLike = true;
-      comment.likeCount += 1;
-      ElMessage.success("点赞成功");
-    } else {
-      ElMessage.error(res.msg);
-    }
-  });
+async function likeBtn(comment: CommentVO) {
+  const res = await userLike(<number>props.likeType, comment.id);
+  if (res.code === 200) {
+    comment.isLike = true;
+    comment.likeCount += 1;
+    ElMessage.success("点赞成功");
+  } else {
+    ElMessage.error(res.msg);
+  }
 }
 
 // 取消点赞
-function cancelLikeBtn(comment: object) {
-  cancelLike(<number>props.likeType, comment.id).then((res) => {
-    if (res.code === 200) {
-      comment.isLike = false;
-      comment.likeCount -= 1;
-      ElMessage.info("取消点赞");
-    } else {
-      ElMessage.error(res.msg);
-    }
-  });
+async function cancelLikeBtn(comment: CommentVO) {
+  const res = await cancelLike(<number>props.likeType, comment.id);
+  if (res.code === 200) {
+    comment.isLike = false;
+    comment.likeCount -= 1;
+    ElMessage.info("取消点赞");
+  } else {
+    ElMessage.error(res.msg);
+  }
 }
 
-function isLikeFunc() {
-  isLike(<number>props.likeType).then((res) => {
-    if (res.code === 200) {
-      res.data.forEach((item: any) => {
-        comments.value.forEach((comment: any) => {
-          if (comment.id === item.typeId) {
-            comment.isLike = true;
-          }
-          // 递归子评论
-          if (comment.childComment && comment.childComment.length) {
-            recursionChildComment(comment.childComment, res);
-          }
-        });
+async function isLikeFunc() {
+  const res = await isLike(<number>props.likeType);
+  if (res.code === 200) {
+    res.data.forEach((item: any) => {
+      comments.value.forEach((comment: any) => {
+        if (comment.id === item.typeId) {
+          comment.isLike = true;
+        }
+        // 递归子评论
+        if (comment.childComment && comment.childComment.length) {
+          recursionChildComment(comment.childComment, res);
+        }
       });
-    }
-  });
+    });
+  }
 }
 
 // 添加父评论
-function addParentComment() {
+async function addParentComment() {
   if (textarea.value === "") {
     ElMessage.error("评论内容不能为空");
     return;
   }
   let data = {
-    type: props.type,
-    typeId: props.typeId,
+    commentType: props.commentType,
+    commentPId: props.commentPId,
     commentContent: textarea.value,
   };
-  addComment(data).then((res: any) => {
-    if (res.code === 200) {
-      ElMessage.success("评论成功");
-      if (res.data) {
-        ElNotification({
-          title: "评论成功",
-          duration: 4000,
-          type: "warning",
-          message: h("i", { style: "color: teal" }, res.data),
-        });
-      }
-      textarea.value = "";
-      getComments(props.typeId, "1", String(pageSize.value));
-    } else if (res.code === 1002) {
-      ElMessage.error(res.msg);
+  const res: any = await addComment(data);
+  if (res.code === 200) {
+    ElMessage.success("评论成功");
+    if (res.data) {
+      ElNotification({
+        title: "评论成功",
+        duration: 4000,
+        type: "warning",
+        message: h("i", { style: "color: teal" }, res.data),
+      });
     }
-  });
+    textarea.value = "";
+    getComments(
+      props.commentType,
+      props.commentPId,
+      commentPagination.current,
+      commentPagination.pageSize
+    );
+  } else if (res.code === 1002) {
+    ElMessage.error(res.msg);
+  }
 }
 </script>
 
@@ -463,10 +494,10 @@ function addParentComment() {
           <!-- 回复框 -->
           <template v-if="isLoading">
             <ReplyBox
-              :type="type"
+              :type="commentType"
               :comment="comment"
               :get-comments="getComments"
-              :page-size="pageSize"
+              :page-size="commentPagination.pageSize"
               :active-comment-id="activeCommentId"
               :set-active-comment="setActiveComment"
             />
@@ -481,8 +512,8 @@ function addParentComment() {
               :author-id="authorId"
               :show-all-child-comments="showAllChildComments"
               :get-comments="getComments"
-              :page-size="pageSize"
-              :type="type"
+              :page-size="commentPagination.pageSize"
+              :type="commentType"
               :active-comment-id="activeCommentId"
               :set-active-comment="setActiveComment"
             />
@@ -517,7 +548,7 @@ function addParentComment() {
     <!-- 查看更多 -->
     <div
       class="more"
-      v-if="isLoading && comments[0]?.parentCommentCount >= pageSize"
+      v-if="isLoading && comments[0]?.parentCommentCount >= commentPagination.pageSize"
     >
       <el-button type="info" plain size="small" @click="moreComment"
         >查看更多</el-button

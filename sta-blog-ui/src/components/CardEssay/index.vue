@@ -1,56 +1,64 @@
 <script setup lang="ts">
-import { getArticleList } from "@/apis/home";
+import { getArticlePage } from "@/apis/home";
 import { ElMessage } from "element-plus";
 import usePaginationStore from "@/store/modules/pagination";
 import { useWindowSize } from "@vueuse/core";
 import { useServiceStore } from "@/store/modules/service";
-import { readArticleList } from "@/utils/file-reader";
+import { readArticlePage } from "@/utils/file-reader";
+import { ArticleVO, Page } from "@/types";
 
-const usePagination = usePaginationStore()
-const useService = useServiceStore()
+// 屏幕宽度
+const { width } = useWindowSize();
+const usePagination = usePaginationStore();
+const useService = useServiceStore();
+const articlePagination = usePagination.articlePagination;
 
-const articleList = ref<any[]>([])
 
 // 监听页数
 watch(
-  () => usePagination.articlePagination.current,
+  () => articlePagination.current,
   () => {
     getArticleListFunc();
     // 滚动到顶部
     window.scrollTo(0, 300);
   }
-)
+);
 
-// 屏幕宽度
-const { width } = useWindowSize()
+const cardList = ref<ArticleVO[]>([]);
 
 async function getArticleListFunc() {
   const res = await useService.requestOrRead(
-    getArticleList,
-    readArticleList,
-    usePagination.articlePagination.current,
-    usePagination.articlePagination.pageSize
-  )
+    getArticlePage,
+    readArticlePage,
+    articlePagination.current,
+    articlePagination.pageSize
+  );
 
   if (res.code === 200) {
-    usePagination.articlePagination.total = res.data.total
-    // 过滤内容
-    res.data.page = res.data.page.map((item: any) => {
-      item.articleContent = item.articleContent.replace(
-        /[*#>`~\-\\[\\]()\\s]|(\\n\\n)/g,
-        ""
-      )
-      // 提取前 50 个字符
-      item.articleContent = item.articleContent.substring(0, 60) + "..."
-      return item;
-    })
-    articleList.value = res.data.page;
+    const pageResult = res.data as Page<ArticleVO>;
+    articlePagination.total = pageResult.total;
+    // 统一标签格式 & 过滤内容
+    pageResult.page.forEach((item: ArticleVO) => {
+      // 后端 tags 可能返回 string[]，统一转为 {id, tagName}[]
+      if (item.tags && item.tags.length > 0 && typeof item.tags[0] === 'string') {
+        item.tags = (item.tags as unknown as string[]).map((name, idx) => ({
+          id: idx,
+          tagName: name,
+        })) as any;
+      }
+      if (item.articleContent) {
+        item.articleContent = item.articleContent
+          .replace(/[*#>`~\-\\[\\]()\\s]|(\\n\\n)/g, "")
+          .substring(0, 60) + "...";
+      }
+    });
+    cardList.value = pageResult.page;
   } else {
     ElMessage.error(res.msg);
   }
 }
 function loadContent() {
-  getArticleListFunc()
+  getArticleListFunc();
 }
 </script>
 
@@ -58,9 +66,9 @@ function loadContent() {
   <!-- 封装文章列表卡片 -->
   <div v-view-request="{ callback: loadContent }">
     <template
-      v-for="(article, index) in articleList"
+      v-for="(article, index) in cardList"
       :key="article.id"
-      v-if="articleList.length > 0"
+      v-if="cardList.length > 0"
     >
       <div
         v-slide-in
@@ -118,7 +126,7 @@ function loadContent() {
             <div class="tag">
               <span>标签：</span>
               <el-tag size="small" class="mr-2" v-for="tag in article.tags">{{
-                tag
+                tag.tagName
               }}</el-tag>
             </div>
           </div>
@@ -150,7 +158,7 @@ function loadContent() {
       </div>
     </template>
   </div>
-  <template v-if="articleList.length == 0">
+  <template v-if="cardList.length == 0">
     <el-skeleton :rows="8" animated />
   </template>
 </template>

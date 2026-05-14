@@ -12,14 +12,13 @@ onMounted(() => {
 
 const links = ref()
 
-function linkListFunc() {
-  linkList().then(res => {
-    if (res.code === 200) {
-      links.value = res.data
-    } else {
-      ElMessage.error(res.msg)
-    }
-  })
+async function linkListFunc() {
+  const res = await linkList();
+  if (res.code === 200) {
+    links.value = res.data
+  } else {
+    ElMessage.error(res.msg)
+  }
 }
 
 const form = reactive({
@@ -60,20 +59,19 @@ const rules = reactive<FormRules<any>>({
 function applyLinkFunc() {
   ruleFormRef.value?.validate(async (valid) => {
     if (valid) {
-      await applyLink(form).then(res => {
-        if (res.code === 200) {
-          ElNotification({
-            title: '成功',
-            showClose: false,
-            duration: 6000,
-            message: '友链申请提交成功，待通过审核后会通过邮件通知您，请注意查收',
-            type: 'success',
-          })
-          dialogVisible.value = false
-        } else {
-          ElMessage.error(res.msg)
-        }
-      })
+      const res = await applyLink(form);
+      if (res.code === 200) {
+        ElNotification({
+          title: '成功',
+          showClose: false,
+          duration: 6000,
+          message: '友链申请提交成功，待通过审核后会通过邮件通知您，请注意查收',
+          type: 'success',
+        })
+        dialogVisible.value = false
+      } else {
+        ElMessage.error(res.msg)
+      }
     } else {
       return false
     }

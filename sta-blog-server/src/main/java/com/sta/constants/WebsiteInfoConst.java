@@ -12,7 +12,11 @@ public class WebsiteInfoConst {
      */
     public static final Long WEBSITE_INFO_ID = 1L;
 
-    public static final String ARCHIVE_CATEGORY_LIST = "category";
+    public static final String ARCHIVE_CATEGORY_CONS = "Category";
 
-    public static final String ARCHIVE_TAG_LIST = "tag";
+    public static final String ARCHIVE_TAG_CONS = "Tag";
+
+    public static final Integer COMMENT_ARTICLE_CONS = 1;
+
+    public static final Integer COMMENT_MESSAGE_CONS = 2;
 }

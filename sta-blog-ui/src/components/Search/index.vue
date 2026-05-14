@@ -15,27 +15,26 @@ const websiteStore = useWebsiteStore()
 
 const searchValue = ref('')
 
-function handleSearch(_: any, isAutoFocus: boolean = false) {
+async function handleSearch(_: any, isAutoFocus: boolean = false) {
   if (searchValue.value && optionsValue.value === '内容') {
     console.log(isAutoFocus)
     if (!isAutoFocus) {
       historyList.value.push(searchValue.value)
     }
-    searchArticleContent(searchValue.value).then((res: any) => {
-      if (res.code === 1004) {
-        ElMessage.error(res.msg);
-        return;
-      }
-      articleSearchList.value = res.data
-      articleSearchList.value = articleSearchList.value?.map(item => {
-        const regex = new RegExp(`(${searchValue.value})`, 'gi');
-        const articleContent = item.articleContent.replace(regex, '<span class="highlight">$1</span>');
-        return {
-          ...item,
-          articleContent
-        };
-      });
-    })
+    const res: any = await searchArticleContent(searchValue.value);
+    if (res.code === 1004) {
+      ElMessage.error(res.msg);
+      return;
+    }
+    articleSearchList.value = res.data
+    articleSearchList.value = articleSearchList.value?.map(item => {
+      const regex = new RegExp(`(${searchValue.value})`, 'gi');
+      const articleContent = item.articleContent.replace(regex, '<span class="highlight">$1</span>');
+      return {
+        ...item,
+        articleContent
+      };
+    });
   }
 }
 
@@ -119,16 +118,14 @@ function historySearch(value: string) {
   }
 }
 
-function getHot() {
-  getHotRecommend().then((res: any) => {
-    hotList.value = res.data
-  })
+async function getHot() {
+  const res: any = await getHotRecommend();
+  hotList.value = res.data
 }
 
-function changeToggle() {
-  getRandomArticle().then(res => {
-    hotList.value = res.data
-  })
+async function changeToggle() {
+  const res = await getRandomArticle();
+  hotList.value = res.data
 }
 
 </script>

@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import usePaginationStore from "@/store/modules/pagination";
 
-const paginationStore = usePaginationStore();
+const usePagination = usePaginationStore();
+const articlePagination = usePagination.articlePagination
 
 </script>
 
 <template>
   <div class="pag">
     <el-pagination background layout="prev, pager, next"
-                   :total="paginationStore.articlePagination.total"
+                   :total="articlePagination.total"
                    :hide-on-single-page="true"
-                   :page-size="paginationStore.articlePagination.pageSize"
-                   @current-change="paginationStore.articlePagination.current = $event"
+                   :page-size="articlePagination.pageSize"
+                   @current-change="articlePagination.current = $event"
 
     />
   </div>

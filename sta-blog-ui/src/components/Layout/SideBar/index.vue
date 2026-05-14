@@ -92,10 +92,9 @@ function getDifferenceInDays() {
 // 每日鸡汤
 const soup = ref('')
 
-function soupSub() {
-  getSoup().then((res: any) => {
-    soup.value = res.hitokoto
-  })
+async function soupSub() {
+  const res: any = await getSoup();
+  soup.value = res.hitokoto
 }
 
 function announcement() {
@@ -108,10 +107,9 @@ function announcement() {
   })
 }
 
-onMounted(() => {
-  getSoup().then((res: any) => {
-    soup.value = res.hitokoto
-  })
+onMounted(async () => {
+  const res: any = await getSoup();
+  soup.value = res.hitokoto
 })
 
 </script>

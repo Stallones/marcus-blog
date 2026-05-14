@@ -1,14 +1,11 @@
 import http from "@/utils/http.ts";
 
 // 获取首页文章列表
-export function getArticleList(pageNum: Number, pageSize: Number) {
+export function getArticlePage(pageNum: number, pageSize: number) {
   return http({
     url: "/article/list",
     method: "get",
-    params: {
-      pageNum,
-      pageSize,
-    },
+    params: { pageNum, pageSize },
   });
 }
 
@@ -18,17 +15,6 @@ export function getRecommendArticleList() {
     url: "/article/recommend",
     method: "get",
   });
-  //   const serviceMode = useServiceStore().serviceMode;
-  //   switch (serviceMode) {
-  //     case "on":
-  //       return http({
-  //         url: "/article/recommend",
-  //         method: "get",
-  //       });
-
-  //     case "off":
-  //       return localResponse({ data: null });
-  //   }
 }
 
 // 获取随机文章
@@ -37,17 +23,6 @@ export function getRandomArticle() {
     url: "/article/random",
     method: "get",
   });
-  //   const serviceMode = useServiceStore().serviceMode;
-  //   switch (serviceMode) {
-  //     case "on":
-  //       return http({
-  //         url: "/article/random",
-  //         method: "get",
-  //       });
-
-  //     case "off":
-  //       return localResponse({ data: null });
-  //   }
 }
 
 // 相关推荐(按照分类)

@@ -64,24 +64,23 @@ const rules = {
   ]
 }
 
-function askCode() {
+async function askCode() {
   if (isEmailValid) {
     coldTime.value = 60
-    sendEmail(form.email, "register").then(res => {
-      if (res.code === 200) {
-        ElMessage.success(`验证码已发送到邮箱：${form.email}，请注意查收`)
-        const intervalId = setInterval(() => {
-          if (coldTime.value === 0) {
-            clearInterval(intervalId);
-          } else {
-            coldTime.value--;
-          }
-        }, 1000)
-      } else {
-        ElMessage.warning(res.msg)
-        coldTime.value = 0
-      }
-    })
+    const res = await sendEmail(form.email, "register");
+    if (res.code === 200) {
+      ElMessage.success(`验证码已发送到邮箱：${form.email}，请注意查收`)
+      const intervalId = setInterval(() => {
+        if (coldTime.value === 0) {
+          clearInterval(intervalId);
+        } else {
+          coldTime.value--;
+        }
+      }, 1000)
+    } else {
+      ElMessage.warning(res.msg)
+      coldTime.value = 0
+    }
   } else {
     ElMessage.warning('请输入正确的电子邮件')
   }
@@ -90,17 +89,16 @@ function askCode() {
 // 判断邮箱是否正确
 const isEmailValid = computed(() => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(form.email))
 
-function registerBtn() {
-  formRef.value.validate((valid) => {
+async function registerBtn() {
+  formRef.value.validate(async (valid) => {
     if (valid) {
-      register(form).then(res => {
-        if (res.code === 200) {
-          ElMessage.success('注册成功，欢迎加入我们')
-          router.push('/login')
-        } else {
-          ElMessage.warning(res.msg)
-        }
-      })
+      const res = await register(form);
+      if (res.code === 200) {
+        ElMessage.success('注册成功，欢迎加入我们')
+        router.push('/login')
+      } else {
+        ElMessage.warning(res.msg)
+      }
     } else {
       ElMessage.warning('请完整填写注册表单内容')
     }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {ref, onMounted, nextTick} from 'vue';
 import {getTimeLine} from "@/apis/article";
+import {readTimeLine} from "@/utils/file-reader";
+import {useServiceStore} from "@/store/modules/service";
 
 
 function handleData(data: any[]) : Record<string, any[]> {
@@ -24,13 +26,13 @@ function handleData(data: any[]) : Record<string, any[]> {
   return groupedArticles;
 }
 
+const useService = useServiceStore();
 const shellRef = ref<HTMLElement | null>(null);
 const items = ref<any>({});
 
 onMounted(async () => {
-  await getTimeLine().then((res: any) => {
-    items.value = handleData(res.data)
-  })
+  const res: any = await useService.requestOrRead(getTimeLine, readTimeLine);
+  items.value = handleData(res.data);
   await nextTick(() => {
     const shell = shellRef.value;
     if (!shell) return;

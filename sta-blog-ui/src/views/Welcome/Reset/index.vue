@@ -45,18 +45,17 @@ const rules = {
   ]
 }
 
-function askCode() {
+async function askCode() {
   if (isEmailValid) {
     coldTime.value = 60
-    sendEmail(form.email, "reset").then(res => {
-      if (res.code === 200) {
-        ElMessage.success(`验证码已发送到邮箱：${form.email}，请注意查收`)
-        setInterval(() => coldTime.value--, 1000)
-      } else {
-        ElMessage.warning(res.msg)
-        coldTime.value = 0
-      }
-    })
+    const res = await sendEmail(form.email, "reset");
+    if (res.code === 200) {
+      ElMessage.success(`验证码已发送到邮箱：${form.email}，请注意查收`)
+      setInterval(() => coldTime.value--, 1000)
+    } else {
+      ElMessage.warning(res.msg)
+      coldTime.value = 0
+    }
   } else {
     ElMessage.warning('请输入正确的电子邮件')
   }
@@ -65,32 +64,30 @@ function askCode() {
 // 判断邮箱是否正确
 const isEmailValid = computed(() => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(form.email))
 
-function confirmReset() {
-  formRef.value.validate((valid: boolean) => {
+async function confirmReset() {
+  formRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      resetPasswordStepOne(form).then(res => {
-        if (res.code === 200) {
-          console.log(res)
-          active.value++
-        } else {
-          ElMessage.warning(res.msg)
-        }
-      })
+      const res = await resetPasswordStepOne(form);
+      if (res.code === 200) {
+        console.log(res)
+        active.value++
+      } else {
+        ElMessage.warning(res.msg)
+      }
     }
   })
 }
 
-function doReset() {
-  formRef.value.validate((valid: boolean) => {
+async function doReset() {
+  formRef.value.validate(async (valid: boolean) => {
     if (valid) {
-      resetPasswordStepTwo(form).then(res => {
-        if (res.code === 200) {
-          ElMessage.success('密码重置成功，请重新登录')
-          router.push('/login')
-        } else {
-          ElMessage.warning(res.msg)
-        }
-      })
+      const res = await resetPasswordStepTwo(form);
+      if (res.code === 200) {
+        ElMessage.success('密码重置成功，请重新登录')
+        router.push('/login')
+      } else {
+        ElMessage.warning(res.msg)
+      }
     }
   })
 }

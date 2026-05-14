@@ -1,5 +1,5 @@
 // 获取token
-import {TOKEN_KEY} from "@/const/Jwt";
+import {TOKEN_KEY} from "@/const";
 import {ElMessage} from "element-plus";
 import useUserStore from "@/store/modules/user.ts";
 

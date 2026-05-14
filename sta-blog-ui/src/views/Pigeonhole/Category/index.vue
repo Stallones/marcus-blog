@@ -4,7 +4,8 @@ import { whereArticleList } from "@/apis/article";
 import ArticleList from "../ArticleList/index.vue";
 import { dayjs } from "element-plus";
 import { useServiceStore } from "@/store/modules/service";
-import { readCategoryList } from "@/utils/file-reader";
+import { readCategoryList, readArchiveArticleList } from "@/utils/file-reader";
+import {ARCHIVE_CATEGORY_CONS} from "@/const";
 
 const route = useRoute();
 const useService = useServiceStore();
@@ -61,19 +62,22 @@ watch(
 );
 
 // 文章
-// function getArticle(id: string | string[]) {
-function getArticle(id: Number) {
+async function getArticle(id: Number) {
   const realId = Array.isArray(id) ? id[0] : id;
-  whereArticleList("category", realId).then((res: any) => {
-    if (res.code === 200 && res.data !== undefined) {
-      res.data.forEach((item: any) => {
-        item.createTime = dayjs(item.createTime).format("YYYY-MM-DD");
-      });
-      articleList.value = res.data;
-    } else {
-      articleList.value = [];
-    }
-  });
+  const res: any = await useService.requestOrRead(
+    whereArticleList,
+    readArchiveArticleList,
+    ARCHIVE_CATEGORY_CONS,
+    realId
+  );
+  if (res.code === 200 && res.data !== undefined) {
+    res.data.forEach((item: any) => {
+      item.createTime = dayjs(item.createTime).format("YYYY-MM-DD");
+    });
+    articleList.value = res.data;
+  } else {
+    articleList.value = [];
+  }
 }
 </script>
 

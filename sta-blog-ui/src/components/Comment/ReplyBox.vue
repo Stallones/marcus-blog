@@ -85,7 +85,7 @@ function addEmoji(emoji: string, comment: object) {
 }
 
 // 添加子评论
-function addChildComment(comment: any) {
+async function addChildComment(comment: any) {
   if (comment.replyText === '' || comment.replyText === undefined) {
     ElMessage.warning('评论内容不能为空')
     return
@@ -98,23 +98,22 @@ function addChildComment(comment: any) {
     replyId: comment.id,
     replyUserId: comment.commentUserId
   }
-  addComment(data).then(res => {
-    if (res.code === 200) {
-      ElMessage.success("回复成功");
-      if (res.data) {
-        ElNotification({
-          title: '回复成功',
-          duration: 4000,
-          type: 'warning',
-          message: h('i', { style: 'color: teal' }, res.data),
-        })
-      }
-      comment.replyText = ''
-      prop.getComments(route.params.id, '1', prop.pageSize)
-    } else if (res.code === 1002) {
-      ElMessage.error(res.msg);
+  const res = await addComment(data);
+  if (res.code === 200) {
+    ElMessage.success("回复成功");
+    if (res.data) {
+      ElNotification({
+        title: '回复成功',
+        duration: 4000,
+        type: 'warning',
+        message: h('i', { style: 'color: teal' }, res.data),
+      })
     }
-  })
+    comment.replyText = ''
+    prop.getComments(route.params.id, '1', prop.pageSize)
+  } else if (res.code === 1002) {
+    ElMessage.error(res.msg);
+  }
 }
 
 // 防止事件传播和默认行为

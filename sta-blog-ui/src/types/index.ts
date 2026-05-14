@@ -57,3 +57,53 @@ export interface Comment {
   userId?: number | string;
   createTime?: string;
 }
+
+export interface TagVO {
+  id: number;
+  tagName: string;
+  articleCount: number | null;
+  createTime: string;
+  updateTime: string;
+}
+
+export interface Page<T = any> {
+  page: T[],
+  total: number
+}
+
+export interface ArticleVO {
+  id: number;
+  userId: number;
+  categoryName: string;
+  categoryId: number;
+  tags: TagVO[];
+  articleCover: string;
+  articleTitle: string;
+  articleType: number;
+  isTop: number;
+  visitCount: number;
+  commentCount: number;
+  likeCount: number;
+  favoriteCount: number;
+  preArticleId: number;
+  preArticleTitle: string;
+  nextArticleTitle: string;
+  nextArticleId: number;
+  createTime: string;
+  updateTime: string;
+  
+  articleContent: string;
+}
+
+export interface ArticleContentVO {
+    id: number
+    articleContent: string
+}
+
+export interface CommentVO {
+  id: string;
+  isLike: boolean;
+  likeCount: number;
+  
+  [key: string]: any;
+}

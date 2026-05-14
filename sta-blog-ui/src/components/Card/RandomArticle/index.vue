@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { getRandomArticle, getRelatedArticle } from "@/apis/home";
-import { useServiceStore } from "@/store/modules/service";
 import { ref, watch } from "vue";
 
-// const serviceMode = useServiceStore().serviceMode;
 
 const props = defineProps({
   title: {
@@ -40,11 +38,10 @@ function randomArticleBtn() {
   getRandomArticleList();
 }
 
-function getRandomArticleList() {
-  getRandomArticle().then((res) => {
-    res.data = formatDate(res.data);
-    randomArticles.value = res.data;
-  });
+async function getRandomArticleList() {
+  const res = await getRandomArticle();
+  res.data = formatDate(res.data);
+  randomArticles.value = res.data;
 }
 
 // 监听参数变化
@@ -56,11 +53,10 @@ watch(
 );
 
 // 相关推荐
-function relatedRecommendBtn(categoryId: string, articleId: string) {
-  getRelatedArticle(categoryId, articleId).then((res) => {
-    res.data = formatDate(res.data);
-    randomArticles.value = res.data;
-  });
+async function relatedRecommendBtn(categoryId: string, articleId: string) {
+  const res = await getRelatedArticle(categoryId, articleId);
+  res.data = formatDate(res.data);
+  randomArticles.value = res.data;
 }
 
 // 去掉时分秒
@@ -89,7 +85,7 @@ function loadContent() {
     :title="title"
     :prefix-icon="prefixIcon"
     :suffix-icon="title === '相关推荐' ? '' : 'rotate'"
-    @isRotate="true"
+    :isRotate="true"
     :isScale="true"
     @invoke="randomArticleBtn"
     v-view-request="{ callback: loadContent }"

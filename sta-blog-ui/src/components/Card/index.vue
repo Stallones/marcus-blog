@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 // 接收父组件传递过来的参数
 defineProps({
   // 前图标的名字
@@ -7,10 +6,15 @@ defineProps({
   // 后图标的名字
   suffixIcon: {
     type: String,
-    default: '',
+    default: "",
   },
   // 是否抖动
   isDithering: {
+    type: Boolean,
+    default: false,
+  },
+  // 是否放大缩小
+  isScale: {
     type: Boolean,
     default: false,
   },
@@ -24,11 +28,6 @@ defineProps({
     type: Boolean,
     default: false,
   },
-  // 是否放大缩小
-  isScale: {
-    type: Boolean,
-    default: false,
-  },
   // 标题
   title: String,
   // 是否是目录
@@ -36,46 +35,58 @@ defineProps({
     type: Boolean,
     default: false,
   },
-})
+});
 
-const emit = defineEmits(['invoke'])
+const emit = defineEmits(["invoke"]);
 
-function invoke(){
-  emit('invoke')
+function invoke() {
+  emit("invoke");
 }
 </script>
 
 <template>
   <!-- 封装侧边栏卡片 -->
-  <div v-slide-in class="card" :style="isCatalog ? 'position: relative;z-index: 9' : ''">
+  <div
+    v-slide-in
+    class="card"
+    :style="isCatalog ? 'position: relative;z-index: 9' : ''"
+  >
     <div class="title" :style="isCatalog ? 'position: sticky;top: 0' : ''">
       <div class="title_text">
-        <SvgIcon :class="isDithering ? 'dithering' : '' || isScale ? 'scale' : ''" :name="prefixIcon" width="30"
-                 height="30"/>
+        <SvgIcon
+          :class="{ dithering: isDithering, scale: isScale }"
+          :name="prefixIcon"
+          width="30"
+          height="30"
+        />
         <span style="margin-left: 10px">{{ title }}</span>
       </div>
       <el-tooltip
-          class="box-item"
-          effect="light"
-          content="刷新"
-          placement="top"
-          v-if="suffixIcon == 'rotate'"
+        class="box-item"
+        effect="light"
+        content="刷新"
+        placement="top"
+        v-if="suffixIcon == 'rotate'"
       >
-        <div :class="{ 'arrow' : isArrow , 'rotate' : isRotate}"
-             :style="suffixIcon == 'rotate' ? 'cursor: pointer' : ''"
-             @click="invoke">
-          <SvgIcon :name="suffixIcon" width="30" height="30"/>
+        <div
+          :class="{ arrow: isArrow, rotate: isRotate }"
+          :style="suffixIcon == 'rotate' ? 'cursor: pointer' : ''"
+          @click="invoke"
+        >
+          <SvgIcon :name="suffixIcon" width="30" height="30" />
         </div>
       </el-tooltip>
-      <div v-else :class="{ 'arrow' : isArrow , 'rotate' : isRotate}"
-           :style="suffixIcon == 'rotate' ? 'cursor: pointer' : ''"
-           @click="invoke">
-        <SvgIcon :name="suffixIcon" width="30" height="30"/>
+      <div
+        v-else
+        :class="{ arrow: isArrow, rotate: isRotate }"
+        :style="suffixIcon == 'rotate' ? 'cursor: pointer' : ''"
+        @click="invoke"
+      >
+        <SvgIcon :name="suffixIcon" width="30" height="30" />
       </div>
-
     </div>
     <div class="content">
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>
@@ -147,7 +158,6 @@ function invoke(){
           }
         }
       }
-
     }
 
     // 箭头动画
@@ -165,7 +175,6 @@ function invoke(){
           transform: translateX(0);
         }
       }
-
     }
 
     // 随机旋转动画
@@ -182,7 +191,6 @@ function invoke(){
         transform: rotate(360deg);
       }
     }
-
   }
 
   .content {

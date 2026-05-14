@@ -32,40 +32,38 @@ onMounted(async () => {
 thirdLogin();
 
 // 第三方登录
-function thirdLogin() {
+async function thirdLogin() {
   // 判断url上面是否有gitee的token
   let access_token = route.query.access_token;
   let login_type = route.query.login_type;
   let user_name = route.query.user_name;
   if (access_token && login_type) {
-    oauthLogin(
+    const res: any = await oauthLogin(
       <string>access_token,
       <string>login_type,
       <string>user_name
-    ).then(async (res: any) => {
-      if (res.code === 200) {
-        // 去掉参数query
-        await router.replace({ query: {} });
-        SET_TOKEN(res.data.token, res.data.expire, true);
-        await userStore.getInfo();
-        ElMessage.success("登录成功");
-        await router.push("/");
-      } else {
-        ElMessage.error(res.msg);
-      }
-    });
+    );
+    if (res.code === 200) {
+      // 去掉参数query
+      await router.replace({ query: {} });
+      SET_TOKEN(res.data.token, res.data.expire, true);
+      await userStore.getInfo();
+      ElMessage.success("登录成功");
+      await router.push("/");
+    } else {
+      ElMessage.error(res.msg);
+    }
   }
 }
 
-const logoutSub = () => {
-  logout().then((res: any) => {
-    if (res.code === 200) {
-      REMOVE_TOKEN();
-      userStore.userInfo = undefined;
-      ElMessage.success("退出登录成功");
-      router.push("/");
-    }
-  });
+const logoutSub = async () => {
+  const res: any = await logout();
+  if (res.code === 200) {
+    REMOVE_TOKEN();
+    userStore.userInfo = undefined;
+    ElMessage.success("退出登录成功");
+    router.push("/");
+  }
 };
 
 const drawer = ref(false);

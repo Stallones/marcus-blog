@@ -3,15 +3,15 @@ import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'ax
 import {ElMessage, ElNotification} from "element-plus"
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import {Jwt_Prefix} from "@/const/Jwt";
+import {JWT_PREFIX_CONS} from "@/const";
 import {GET_TOKEN} from "@/utils/auth.ts";
 import useLoadingStore from "@/store/modules/loading.ts";
 import {REQUEST_LOADING_PATH, IGNORE_ERROR_PATH} from "@/utils/enum.ts";
-import type { ApiResponse } from '@/types';
+import { ApiResponse } from '@/types';
 
 // 创建axios实例
 // 说明：response 拦截器返回了 response.data，因此在调用处我们期望 http.get/post 等返回 Promise<ApiResponse<T>>。
-//        ApiResponse 包含 { code, data, msg } 三个字段，与后端统一响应体对应。
+
 type HttpInstance = {
     <T = any>(config: any): Promise<ApiResponse<T>>;
     get<T = any>(url: string, config?: any): Promise<ApiResponse<T>>;
@@ -59,7 +59,7 @@ http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     config.headers['X-Client-Type'] = 'Frontend'
     // 请求头添加token
     if (GET_TOKEN() == null) return config
-    config.headers['Authorization'] = Jwt_Prefix + GET_TOKEN()
+    config.headers['Authorization'] = JWT_PREFIX_CONS + GET_TOKEN()
 
     return config
 }, (error: AxiosError) => {
