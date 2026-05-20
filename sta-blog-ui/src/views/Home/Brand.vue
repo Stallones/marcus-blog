@@ -25,7 +25,7 @@
 
 import useWebsiteStore from "@/store/modules/website.ts";
 import {getSoupTyping} from "@/apis/thirdParty";
-import TextGlitch from "@/components/TextGlitch/index.vue";
+import TextGlitch from "@/components/TextGlitch.vue";
 
 const useWebsite = useWebsiteStore()
 

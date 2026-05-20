@@ -1,4 +1,4 @@
-import SvgIcon from './SvgIcon/index.vue';
+import SvgIcon from './SvgIcon.vue';
 import type { App, Component } from 'vue';
 
 

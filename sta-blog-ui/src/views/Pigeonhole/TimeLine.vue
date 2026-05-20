@@ -97,7 +97,7 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-@use './index' as *;
+@use './TimeLine' as *;
 
 .year {
   background-color: white;

@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import InfoCard from '@/components/CardInfo/index.vue'
+import InfoCard from '@/components/CardInfo.vue'
 import Card from '@/components/Card/index.vue'
 import {ref, onMounted} from 'vue'
 import {getSoup} from "@/apis/thirdParty";

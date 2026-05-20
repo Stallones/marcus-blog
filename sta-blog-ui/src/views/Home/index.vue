@@ -1,25 +1,25 @@
-<script setup lang="ts">
-import Main from "@/views/Home/Main/index.vue";
-import Images from "@/views/Home/Images/index.vue";
-import Brand from "@/views/Home/Brand/index.vue";
-import Particles from "@/components/Particles/index.vue";
-import MouseTrail from "@/components/MouseTrail/index.vue";
-import ScrollParallax from "@/components/ScrollParallax/index.vue";
-
-</script>
 <template>
   <div class="home_container">
-    <MouseTrail/>
-    <Images/>
-    <Particles/>
-    <Brand/>
+    <Images />
+    <Brand />
+    <MouseTrail />
+    <Particles />
     <div class="bg">
       <ScrollParallax :speed="0.1" direction="up">
-        <Main/>
+        <Main />
       </ScrollParallax>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import Main from "@/views/Home/Main/index.vue";
+import Images from "@/views/Home/Images.vue";
+import Brand from "@/views/Home/Brand.vue";
+import Particles from "@/components/Particles.vue";
+import MouseTrail from "@/components/MouseTrail.vue";
+import ScrollParallax from "@/components/ScrollParallax.vue";
+</script>
 
 <style lang="scss" scoped>
 .bg {
@@ -28,7 +28,7 @@ import ScrollParallax from "@/components/ScrollParallax/index.vue";
   background-color: var(--mao-background-color);
 }
 
-.home_container{
+.home_container {
   // 浏览器宽度 - 滚动条宽度，设置为100vw首页底部会出现滚动条
   width: 100%;
   // 屏幕小910

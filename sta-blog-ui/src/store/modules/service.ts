@@ -3,11 +3,12 @@ import { defineStore } from "pinia"
 import { ref } from "vue"
 import { healthCheck } from "@/apis/website"
 import { ApiResponse } from "@/types";
+import { tr } from "element-plus/es/locale/index.mjs";
 
 export const useServiceStore = defineStore("service", () => {
   // 后端服务是否可用
   const isServiceAvailable = ref(false)
-  const isChecked = ref<boolean>(false)
+  const afterCheckService = ref<boolean>(false)
 
   // 检查后端服务是否可用
   const checkService = async () => {
@@ -19,6 +20,8 @@ export const useServiceStore = defineStore("service", () => {
     } catch (err) {
       isServiceAvailable.value = false
     }
+    
+    afterCheckService.value = true
   }
 
   // const requestOrRead = (request: () => Promise<any>, read: () => Promise<any>) => {
@@ -43,7 +46,7 @@ export const useServiceStore = defineStore("service", () => {
 
   return {
     isServiceAvailable,
-    isChecked,
+    afterCheckService,
     checkService,
     requestOrRead,
   };

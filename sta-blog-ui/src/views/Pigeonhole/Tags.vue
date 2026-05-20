@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ArticleList from "../ArticleList/index.vue";
+import ArticleList from "./ArticleList.vue";
 import { tagList } from "@/apis/tag";
 import { whereArticleList } from "@/apis/article";
 import { useServiceStore } from "@/store/modules/service";

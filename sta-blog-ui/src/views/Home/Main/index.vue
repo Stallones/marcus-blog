@@ -37,8 +37,8 @@
 
 
 <script setup lang="ts">
-import RecommendArticle from './RecommendArticle/index.vue'
-import OfflineSearch from './OfflineSearch/index.vue'
+import RecommendArticle from './RecommendArticle.vue'
+import OfflineSearch from './OfflineSearch.vue'
 import useWebsiteStore from "@/store/modules/website.ts";
 import { useServiceStore } from '@/store/modules/service';
 

@@ -16,7 +16,7 @@ export const constantRouter = [
             // 时间轴
             {
                 path: '/timeline',
-                component: () => import('@/views/Pigeonhole/TimeLine/index.vue'),
+                component: () => import('@/views/Pigeonhole/TimeLine.vue'),
                 name: 'timeline',
                 meta: {
                     title: '时间轴',
@@ -25,7 +25,7 @@ export const constantRouter = [
             // 分类
             {
                 path: '/category/:id?',
-                component: () => import('@/views/Pigeonhole/Category/index.vue'),
+                component: () => import('@/views/Pigeonhole/Category.vue'),
                 name: 'category',
                 meta: {
                     title: '文章分类',
@@ -34,7 +34,7 @@ export const constantRouter = [
             // 标签
             {
                 path: '/tags/:id?',
-                component: () => import('@/views/Pigeonhole/Tags/index.vue'),
+                component: () => import('@/views/Pigeonhole/Tags.vue'),
                 name: 'tags',
                 meta: {
                     title: '文章标签',
@@ -43,7 +43,7 @@ export const constantRouter = [
             // 树洞
             {
                 path: '/tree-hole',
-                component: () => import('@/views/Amusement/TreeHole/index.vue'),
+                component: () => import('@/views/Amusement/TreeHole.vue'),
                 name: 'treeHole',
                 meta: {
                     title: '心灵树洞',
@@ -57,7 +57,7 @@ export const constantRouter = [
                 children: [
                     {
                         path: '',
-                        component: () => import('@/views/Amusement/Message/MessageList/index.vue'),
+                        component: () => import('@/views/Amusement/Message/MessageList.vue'),
                         name: 'messageList',
                         meta: {
                             title: '留言板',
@@ -65,7 +65,7 @@ export const constantRouter = [
                     },
                     {
                         path: '/message/detail/:id?',
-                        component: () => import('@/views/Amusement/Message/MessageDetail/index.vue'),
+                        component: () => import('@/views/Amusement/Message/MessageDetail.vue'),
                         name: 'messageDetail',
                         meta: {
                             title: '留言详情',
@@ -76,7 +76,7 @@ export const constantRouter = [
             // 友链
             {
                 path: '/link',
-                component: () => import('@/views/Link/index.vue'),
+                component: () => import('@/views/Link.vue'),
                 name: 'link',
                 meta: {
                     title: '博客友链',
@@ -94,7 +94,7 @@ export const constantRouter = [
             // 关于
             {
                 path: '/about',
-                component: () => import('@/views/About/index.vue'),
+                component: () => import('@/views/About.vue'),
                 name: 'about',
                 meta: {
                     title: '关于网站',
@@ -130,7 +130,7 @@ export const constantRouter = [
         children: [
             {
                 path: '/login',
-                component: () => import('@/views/Welcome/Login/index.vue'),
+                component: () => import('@/views/Welcome/Login.vue'),
                 name: 'welcome-login',
                 meta: {
                     title: '用户登录',
@@ -138,7 +138,7 @@ export const constantRouter = [
             },
             {
                 path: '/register',
-                component: () => import('@/views/Welcome/Register/index.vue'),
+                component: () => import('@/views/Welcome/Register.vue'),
                 name: 'welcome-register',
                 meta: {
                     title: '用户注册',
@@ -146,7 +146,7 @@ export const constantRouter = [
             },
             {
                 path: '/reset',
-                component: () => import('@/views/Welcome/Reset/index.vue'),
+                component: () => import('@/views/Welcome/Reset.vue'),
                 name: 'welcome-reset',
                 meta: {
                     title: '重置密码',
@@ -157,7 +157,7 @@ export const constantRouter = [
     // 设置
     {
         path: '/setting',
-        component: () => import('@/views/Setting/index.vue'),
+        component: () => import('@/views/Setting.vue'),
         name: 'setting',
         meta: {
             title: '用户设置',

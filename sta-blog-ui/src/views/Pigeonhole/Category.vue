@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { categoryList } from "@/apis/category";
 import { whereArticleList } from "@/apis/article";
-import ArticleList from "../ArticleList/index.vue";
+import ArticleList from "./ArticleList.vue";
 import { dayjs } from "element-plus";
 import { useServiceStore } from "@/store/modules/service";
 import { readCategoryList, readArchiveArticleList } from "@/utils/file-reader";

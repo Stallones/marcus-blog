@@ -17,7 +17,7 @@ import {useColorMode} from '@vueuse/core'
 import useUserStore from "@/store/modules/user.ts"
 import router from "@/router";
 import useWebsiteStore from "@/store/modules/website.ts";
-import SvgIcon from "@/components/SvgIcon/index.vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 import {ref} from "vue";
 import {useRoute} from "vue-router";
 import {useServiceStore} from "@/store/modules/service";
@@ -64,10 +64,10 @@ const handleScroll = () => {
     isMenuHidden.value = false;
       
   }
-  else {
-    // 保留原有逻辑：向下滚动隐藏，向上滚动显示
-    // isMenuHidden.value = currentScrollTop > lastScrollTop;
-  }
+  // else {
+  //   // 保留原有逻辑：向下滚动隐藏，向上滚动显示
+  //   // isMenuHidden.value = currentScrollTop > lastScrollTop;
+  // }
 
   // 立即更新背景透明状态
   // isTransparent.value = currentScrollTop === 0;

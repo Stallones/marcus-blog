@@ -2,9 +2,10 @@ import { createApp } from 'vue'
 import App from '@/App.vue'
 // svg插件需要配置代码
 import 'virtual:svg-icons-register'
-// 引入自定义插件对象：注册整个项目全局组件
+
 import gloablComponent from '@/components'
 import router from '@/router'
+
 // 引入模板的全局的样式
 import '@/styles/index.scss'
 // tailwind.css  https://www.tailwindcss.cn/docs

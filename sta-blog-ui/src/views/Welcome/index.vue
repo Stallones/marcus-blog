@@ -3,7 +3,6 @@ const login_bg = import.meta.env.VITE_MINIO_SERVE + '/blog/@SYB1[VP3FD01[03P`HBG
 </script>
 
 <template>
-  <Header/>
   <div style="width: 100vw;height: 100vh;overflow: hidden;display: flex">
     <!-- 左边区域 -->
     <div class="left-card">

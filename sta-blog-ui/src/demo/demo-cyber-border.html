@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>科技感炫彩 Border 演示</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #050510;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      padding: 40px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .card {
+      position: relative;
+      padding: 40px 32px;
+      border-radius: 16px;
+      color: #fff;
+      text-align: center;
+      background: #0a0a1a;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #00f5ff, #ff00e4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #00f5ff, #7b2ff7);
+      padding: 2px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* ===== 方案 1: 渐变圆角边框 (mask 方案) ===== */
+    .card-1::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, #00f5ff, #ff00e4, #7b2ff7, #00f5ff);
+      background-size: 300% 300%;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: moveGradient 4s ease infinite;
+    }
+
+    @keyframes moveGradient {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ===== 方案 2: 旋转彩环边框 (conic-gradient) ===== */
+    .card-2 {
+      overflow: hidden;
+    }
+
+    .card-2::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      background: conic-gradient(
+        from 0deg,
+        #00f5ff, #ff00e4, #7b2ff7, #00d4ff, #ff00e4, #00f5ff
+      );
+      animation: spin 3s linear infinite;
+      z-index: 0;
+    }
+
+    .card-2::after {
+      content: '';
+      position: absolute;
+      inset: 2px;
+      background: #0a0a1a;
+      border-radius: inherit;
+      z-index: 1;
+    }
+
+    .card-2 > * { position: relative; z-index: 2; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== 方案 3: 霓虹辉光边框 ===== */
+    .card-3 {
+      border: 2px solid transparent;
+      border-image: linear-gradient(135deg, #0ff, #f0f, #0ff) 1;
+      animation: neonPulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes neonPulse {
+      from {
+        box-shadow:
+          0 0 5px #0ff,
+          0 0 10px #f0f,
+          inset 0 0 5px rgba(0,255,255,0.1);
+      }
+      to {
+        box-shadow:
+          0 0 15px #0ff,
+          0 0 30px #f0f,
+          0 0 45px #7b2ff7,
+          inset 0 0 10px rgba(0,255,255,0.2);
+      }
+    }
+
+    /* ===== 方案 4: @property 旋转动画 ===== */
+    .card-4 {
+      overflow: hidden;
+    }
+
+    .card-4::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: inherit;
+      background: conic-gradient(
+        from var(--angle, 0deg),
+        #00f5ff, #7b2ff7, #ff00e4, #00d4ff, #00f5ff
+      );
+      z-index: 0;
+      animation: rotateProp 3s linear infinite;
+    }
+
+    .card-4::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      background: #0a0a1a;
+      border-radius: inherit;
+      z-index: 1;
+    }
+
+    .card-4 > * { position: relative; z-index: 2; }
+
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes rotateProp {
+      to { --angle: 360deg; }
+    }
+
+    /* ===== 方案 5: 多重 box-shadow 终极版 ===== */
+    .card-5 {
+      overflow: hidden;
+    }
+
+    .card-5::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0ff, #f0f, #ff0, #0ff);
+      background-size: 400% 100%;
+      z-index: 0;
+      animation: slideBg 4s linear infinite;
+    }
+
+    .card-5::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      background: #0a0a1a;
+      border-radius: inherit;
+      z-index: 1;
+    }
+
+    .card-5 > * { position: relative; z-index: 2; }
+
+    .card-5 {
+      box-shadow:
+        0 0 10px rgba(0,255,255,0.3),
+        0 0 20px rgba(255,0,228,0.2),
+        inset 0 0 15px rgba(0,255,255,0.05);
+    }
+
+    @keyframes slideBg {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 400% 0%; }
+    }
+
+    /* ===== 方案 6: 点阵科技边框 ===== */
+    .card-6 {
+      overflow: hidden;
+    }
+
+    .card-6::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #0ff 0px,
+          #0ff 3px,
+          transparent 3px,
+          transparent 8px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          #f0f 0px,
+          #f0f 3px,
+          transparent 3px,
+          transparent 8px
+        );
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: dashMove 1s linear infinite;
+    }
+
+    @keyframes dashMove {
+      to { background-position: 8px 0, 0 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card card-1">
+      <span class="badge">方案 1</span>
+      <h3>渐变圆角边框</h3>
+      <p>linear-gradient + mask 方案<br/>浏览器兼容性最好</p>
+    </div>
+
+    <div class="card card-2">
+      <span class="badge">方案 2</span>
+      <h3>旋转彩环边框</h3>
+      <p>conic-gradient 旋转<br/>最经典酷炫效果</p>
+    </div>
+
+    <div class="card card-3">
+      <span class="badge">方案 3</span>
+      <h3>霓虹辉光边框</h3>
+      <p>box-shadow 呼吸动画<br/>代码最简洁</p>
+    </div>
+
+    <div class="card card-4">
+      <span class="badge">方案 4</span>
+      <h3>@property 旋转</h3>
+      <p>CSS @property 驱动<br/>硬件加速最流畅</p>
+    </div>
+
+    <div class="card card-5">
+      <span class="badge">方案 5</span>
+      <h3>流光辉光组合</h3>
+      <p>渐变色滑动 + 辉光<br/>层次最丰富</p>
+    </div>
+
+    <div class="card card-6">
+      <span class="badge">方案 6</span>
+      <p style="margin-top: -8px;">⚡ 点阵科技风 ⚡</p>
+      <h3>断点虚线边框</h3>
+      <p>repeating-linear-gradient<br/>赛博朋克风格</p>
+    </div>
+  </div>
+</body>
+</html>

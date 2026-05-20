@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { Setting, Promotion, Close } from "@element-plus/icons-vue";
-import SvgIcon from "@/components/SvgIcon/index.vue";
+import SvgIcon from "@/components/SvgIcon.vue";
 import { useColorMode } from "@vueuse/core";
-import DayNightToggleButton from "@/components/DayNightToggle";
+import DayNightToggleButton from "@/components/DayNightToggle.ts";
 import useUserStore from "@/store/modules/user.ts";
 import { logout, oauthLogin } from "@/apis/user";
 import { REMOVE_TOKEN, SET_TOKEN } from "@/utils/auth.ts";
