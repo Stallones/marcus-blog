@@ -1,0 +1,16 @@
+
+> kuailemao-blog@0.0.0 dev D:\Programer\local\sta-blog\sta-blog-ui
+> node src/utils/pagefind-dev.mjs && vite
+
+[Pagefind Dev] 读取文章清单...
+[Pagefind Dev] 共 5 篇文章
+[Pagefind Dev] ✅ 索引已生成到 D:\Programer\local\sta-blog\sta-blog-ui\public\pagefind（5 篇）
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+Port 50011 is in use, trying another one...
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m1081[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m50012[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.66.3:[1m50012[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.58.1:[1m50012[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.20.1:[1m50012[22m/[39m
