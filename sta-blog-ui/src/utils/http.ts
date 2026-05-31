@@ -23,7 +23,7 @@ type HttpInstance = {
 
 const http: HttpInstance = axios.create({
     baseURL: import.meta.env.VITE_APP_BASE_API ?? '/', // api的base_url
-    timeout: 5000, // 请求超时时间
+    timeout: 8000, // 请求超时时间
     headers: {
         'Content-Type': 'application/json;charset=UTF-8'
     }

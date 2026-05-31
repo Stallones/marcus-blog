@@ -33,7 +33,7 @@ const loadingStore = useLoadingStore()
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 100; /* was 999: 加载遮罩，只需高于导航和内容 */
 }
 
 .loading-container {

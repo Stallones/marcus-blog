@@ -17,6 +17,9 @@ const useWebsite = useWebsiteStore()
   </div>
 </template>
 <style lang="scss" scoped>
+// 与 Layout/main-wrapper 共享的最大宽度
+$footer-max-width: 1200px;
+
 .Footer {
   box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -26,11 +29,18 @@ const useWebsite = useWebsiteStore()
 }
 
 .footer_container {
-  width: 100%;
+  max-width: $footer-max-width;
+  margin: 0 auto;          // 居中对齐
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+
+  @media screen and (max-width: 910px) {
+    padding: 0 1rem;
+  }
 }
 
 .footer_text {

@@ -1,13 +1,16 @@
 <template>
-  <Main is-side-bar>
+  <Main >
     <!--内容区 -->
-    <template #content>
+    <template #mainContent>
       <div class="announcement">
         <SvgIcon style="min-width: 30px" name="notice" color="#409EFF"/>
         <span>{{ useWebsite?.webInfo?.headerNotification }}</span>
       </div>
-      <RecommendArticle/>
+
       <OfflineSearch v-if="!useService.isServiceAvailable"/>
+
+      <RecommendArticle/>
+      
       <div class="essay_title">
         <el-divider border-style="dashed" content-position="left">
           <div>
@@ -29,7 +32,7 @@
       </div>
     </template>
     <!-- 侧边栏 -->
-    <template #information>
+    <template #mainSideBar>
       <SideBar/>
     </template>
   </Main>
@@ -37,8 +40,8 @@
 
 
 <script setup lang="ts">
-import RecommendArticle from './RecommendArticle.vue'
-import OfflineSearch from './OfflineSearch.vue'
+import RecommendArticle from '../../../components/RecommendArticle.vue'
+import OfflineSearch from '../../../components/OfflineSearch.vue'
 import useWebsiteStore from "@/store/modules/website.ts";
 import { useServiceStore } from '@/store/modules/service';
 
@@ -54,7 +57,8 @@ const useService = useServiceStore()
   margin-top: 10px;
   padding: 10px;
   text-align: center;
-  border: 1px dotted #ccc;
+  // border: 1px dotted #ccc;
+  background-color: var(--el-bg-color);
   border-radius: 15px;
   // 与图标对齐
   display: flex;

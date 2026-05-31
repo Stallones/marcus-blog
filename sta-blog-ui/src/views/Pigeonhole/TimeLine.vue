@@ -71,13 +71,7 @@ onMounted(async () => {
 
 </script>
 <template>
-  <div>
-    <Main only-father-container>
-      <template #banner>
-        <Banner title="时间轴" subtitle="TimeLine"/>
-      </template>
-      <template #content>
-        <div class="shell" ref="shellRef">
+  <div class="shell" ref="shellRef">
           <div class="timeline">
             <template v-for="(item,year) in items" :key="item.id">
               <div class="year">--{{ year }}--</div>
@@ -91,16 +85,13 @@ onMounted(async () => {
             </template>
           </div>
         </div>
-      </template>
-    </Main>
-  </div>
 </template>
 
 <style lang="scss" scoped>
 @use './TimeLine' as *;
 
 .year {
-  background-color: white;
+  background-color: var(--mao-timeline-year-bg);
   position: sticky;
   top: 5rem;
   text-align: center;

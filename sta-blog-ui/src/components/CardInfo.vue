@@ -62,12 +62,12 @@ const useWebsite = useWebsiteStore()
 <style scoped lang="scss">
 .info_container {
   box-sizing: border-box;
-  width: $card-width;
+  // width: $card-width;
   min-height: 300px;
-  margin: $card-margin;
+  // margin: $card-margin;
   border-radius: $border-radius;
   text-align: center;
-  border: 1px solid var(--el-border-color-lighter);
+  // border: 1px solid var(--el-border-color-lighter);
   background: var(--el-bg-color);
   position: relative;
   overflow: hidden;

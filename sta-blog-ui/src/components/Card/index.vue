@@ -94,9 +94,9 @@ function invoke() {
 <style scoped lang="scss">
 .card {
   background-color: var(--el-bg-color);
-  width: $card-width;
-  margin: $card-margin;
-  border: 1px solid var(--el-border-color);
+  // width: $card-width;
+  // margin: $card-margin;
+  // border: 1px solid var(--el-border-color);
   border-radius: $border-radius;
   margin-top: 1.5em;
   // 添加阴影

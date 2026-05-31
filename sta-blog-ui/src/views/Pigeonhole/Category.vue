@@ -5,7 +5,7 @@ import ArticleList from "./ArticleList.vue";
 import { dayjs } from "element-plus";
 import { useServiceStore } from "@/store/modules/service";
 import { readCategoryList, readArchiveArticleList } from "@/utils/file-reader";
-import {ARCHIVE_CATEGORY_CONS} from "@/const";
+import { ARCHIVE_CATEGORY_CONS } from "@/const";
 
 const route = useRoute();
 const useService = useServiceStore();
@@ -24,7 +24,7 @@ onMounted(async () => {
 
   // 地址栏是否有分类id
   if (route.params.id) {
-    const cateId = Number(route.params.id)
+    const cateId = Number(route.params.id);
     isQueryArticle.value = true;
     // 判断选中的分类
     categorys.value.forEach((item) => {
@@ -44,7 +44,7 @@ watch(
   () => route.params.id,
   (id) => {
     if (id) {
-      const cateId = Number(route.params.id)
+      const cateId = Number(route.params.id);
       isQueryArticle.value = true;
       categorys.value.forEach((item) => {
         if (item.id === Number(route.params.id)) {
@@ -82,58 +82,49 @@ async function getArticle(id: Number) {
 </script>
 
 <template>
-  <div>
-    <Main only-father-container>
-      <template #banner>
-        <Banner title="分类" subtitle="category" />
-      </template>
-      <template #content>
-        <template v-if="!isQueryArticle">
-          <div class="category_container">
-            <div class="title">文章分类</div>
-            <div class="item_container">
-              <template v-for="category in categorys" :key="category.id">
-                <div
-                  v-slide-in
-                  class="item"
-                  @click="$router.push(`/category/${category.id}`)"
-                >
-                  <div>{{ category.categoryName }}</div>
-                  <div>
-                    <span>{{ category.articleCount }}</span>
-                  </div>
-                </div>
-              </template>
-            </div>
-          </div>
-        </template>
-        <template v-if="isQueryArticle">
-          <div class="category_container">
-            <div class="title">
-              {{ title }}
-            </div>
+  <template v-if="!isQueryArticle">
+    <div class="category_container">
+      <div class="title">文章分类</div>
+      <div class="item_container">
+        <template v-for="category in categorys" :key="category.id">
+          <div
+            v-slide-in
+            class="item"
+            @click="$router.push(`/category/${category.id}`)"
+          >
+            <div>{{ category.categoryName }}</div>
             <div>
-              <el-scrollbar>
-                <div class="scrollbar-flex-content">
-                  <template v-for="category in categorys" :key="category.id">
-                    <p
-                      @click="$router.push(`/category/${category.id}`)"
-                      class="scrollbar-item"
-                      :class="category.isActive ? 'active' : ''"
-                    >
-                      {{ category.categoryName }}
-                    </p>
-                  </template>
-                </div>
-              </el-scrollbar>
+              <span>{{ category.articleCount }}</span>
             </div>
-            <el-divider />
-            <ArticleList :articleList="articleList" />
           </div>
         </template>
-      </template>
-    </Main>
-  </div>
+      </div>
+    </div>
+  </template>
+  <template v-if="isQueryArticle">
+    <div class="category_container">
+      <div class="title">
+        {{ title }}
+      </div>
+      <div>
+        <el-scrollbar>
+          <div class="scrollbar-flex-content">
+            <template v-for="category in categorys" :key="category.id">
+              <p
+                @click="$router.push(`/category/${category.id}`)"
+                class="scrollbar-item"
+                :class="category.isActive ? 'active' : ''"
+              >
+                {{ category.categoryName }}
+              </p>
+            </template>
+          </div>
+        </el-scrollbar>
+      </div>
+      <el-divider />
+      <ArticleList :articleList="articleList" />
+    </div>
+  </template>
 </template>
 
 <style scoped lang="scss">
@@ -141,6 +132,8 @@ async function getArticle(id: Number) {
   display: flex;
   flex-direction: column;
   width: 100%;
+  background-color: var(--mao-background-color);
+  border-radius: 1rem;
 
   .scrollbar-flex-content {
     display: flex;
@@ -230,7 +223,7 @@ async function getArticle(id: Number) {
           height: 0.2em;
           border-radius: 0.1em;
           // 蓝紫色渐变色背景
-          background: white;
+          background: var(--card-bg);
           transition: width 0.8s ease; /* 过渡动画效果 */
         }
       }

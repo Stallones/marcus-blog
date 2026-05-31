@@ -1,5 +1,4 @@
 import http from "@/utils/http.ts";
-import EasyTyper from "easy-typer-js";
 // 第三方的api接口
 // 一言接口
 let myYiYan = import.meta.env.VITE_YIYAN_API
@@ -12,17 +11,4 @@ export const getSoup = () => {
         url: myYiYan,
         method: 'get'
     })
-}
-
-// 打字机-每日鸡汤
-export const getSoupTyping = async (typerObj: any) => {
-    try {
-        const res = await fetch(myYiYan);
-        const { hitokoto } = await res.json();
-        new EasyTyper(typerObj, hitokoto,
-            () => { getSoupTyping(typerObj) },
-            () => { })
-    } catch (err) {
-        console.error(err)
-    }
 }

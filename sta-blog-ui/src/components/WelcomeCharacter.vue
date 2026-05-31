@@ -18,7 +18,7 @@
   position: fixed;
   right: 45%;
   bottom: -25px;
-  z-index: 1000;
+  z-index: 5; /* was 1000: Welcome 页面角色，只需高于背景 */
   
   .character-image {
     width: 200px;

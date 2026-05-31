@@ -4,6 +4,7 @@ import { ElMessage } from "element-plus";
 import usePaginationStore from "@/store/modules/pagination";
 import { useWindowSize } from "@vueuse/core";
 import { useServiceStore } from "@/store/modules/service";
+import { useSearchStore } from "@/store/modules/search";
 import { readArticlePage } from "@/utils/file-reader";
 import { ArticleVO, Page } from "@/types";
 
@@ -11,6 +12,7 @@ import { ArticleVO, Page } from "@/types";
 const { width } = useWindowSize();
 const usePagination = usePaginationStore();
 const useService = useServiceStore();
+const searchStore = useSearchStore();
 const articlePagination = usePagination.articlePagination;
 
 
@@ -18,6 +20,8 @@ const articlePagination = usePagination.articlePagination;
 watch(
   () => articlePagination.current,
   () => {
+    // 搜索模式下不触发 API 请求
+    if (searchStore.searchResults) return;
     getArticleListFunc();
     // 滚动到顶部
     window.scrollTo(0, 300);
@@ -25,8 +29,33 @@ watch(
 );
 
 const cardList = ref<ArticleVO[]>([]);
+const searchDisplayLimit = ref(10);
+
+// 监听搜索 store → 有搜索结果时直接渲染（首次展示 10 条）
+watch(
+  () => searchStore.searchResults,
+  (results) => {
+    if (results) {
+      searchDisplayLimit.value = 10;
+      cardList.value = results.page.slice(0, 10);
+      articlePagination.total = results.total;
+    } else {
+      // 搜索被清除 → 重新加载全量文章
+      searchDisplayLimit.value = 10;
+      articlePagination.current = 1;
+      getArticleListFunc();
+    }
+  }
+);
 
 async function getArticleListFunc() {
+  // 搜索模式下使用搜索 store 的数据，不调 API
+  if (searchStore.searchResults) {
+    cardList.value = searchStore.searchResults.page.slice(0, searchDisplayLimit.value);
+    articlePagination.total = searchStore.searchResults.total;
+    return;
+  }
+
   const res = await useService.requestOrRead(
     getArticlePage,
     readArticlePage,
@@ -60,6 +89,12 @@ async function getArticleListFunc() {
 function loadContent() {
   getArticleListFunc();
 }
+
+function showMoreResults() {
+  if (!searchStore.searchResults) return;
+  searchDisplayLimit.value = searchStore.searchResults.total;
+  cardList.value = searchStore.searchResults.page.slice(0, searchDisplayLimit.value);
+}
 </script>
 
 <template>
@@ -73,7 +108,7 @@ function loadContent() {
       <div
         v-slide-in
         @click="$router.push('/article/' + article.id)"
-        class="h-92 md:h-60 mt-4 flex flex-col md:flex-row card overflow-hidden shadow-md mb-5 mx-2 dark:bg-[#0d1117]"
+        class="h-92 md:h-60 mt-4 flex flex-col md:flex-row card overflow-hidden shadow-md mb-5 mx-2"
       >
         <div
           class="w-full md:h-full md:w-1/2 h-40"
@@ -157,6 +192,15 @@ function loadContent() {
         </div>
       </div>
     </template>
+    <!-- 搜索模式下超 10 条时显示"展开"按钮 -->
+    <div
+      v-if="searchStore.searchResults && searchStore.searchResults.total > searchDisplayLimit"
+      class="show-more-wrap"
+    >
+      <el-button type="primary" plain @click="showMoreResults">
+        显示更多结果（共 {{ searchStore.searchResults.total }} 篇）
+      </el-button>
+    </div>
   </div>
   <template v-if="cardList.length == 0">
     <el-skeleton :rows="8" animated />
@@ -166,7 +210,8 @@ function loadContent() {
 <style scoped lang="scss">
 .card {
   border-radius: $border-radius;
-  border: 1px solid #30363d;
+  // border: 1px solid #30363d;
+  background-color: var(--el-bg-color);
 
   &:hover img {
     transform: scale(1.1);
@@ -183,6 +228,11 @@ function loadContent() {
       transition: transform 0.3s linear;
     }
   }
+}
+
+.show-more-wrap {
+  text-align: center;
+  padding: 12px 0;
 }
 
 .classify {

@@ -117,7 +117,9 @@ onUnmounted(() => {
   </div>
   <!-- <nav :class="{ 'hidden': isMenuHidden, 'transparent': isTransparent }"> -->
   <nav :class="{ 'hidden': isMenuHidden }">
-    <div id="menu-left">
+    <!-- 导航栏内容容器 — 与主体内容区对齐 -->
+    <div class="nav-inner">
+      <div id="menu-left">
       <div id="menus">
         <span id="blog-info">
           <a href="/">{{ useWebsite.webInfo?.websiteName }}</a>
@@ -297,10 +299,14 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+    </div><!-- /.nav-inner -->
   </nav>
 </template>
 
 <style scoped lang="scss">
+// 与 Layout/main-wrapper 共享的最大宽度
+$menu-max-width: 1200px;
+
 // 菜单栏颜色
 $menu-bg-light: rgba(240, 248, 255, 0.4);
 $menu-bg-dark: rgba(22, 27, 34, 0.4);
@@ -311,6 +317,7 @@ nav {
   position: fixed;
   top: 0;
   display: flex;
+  justify-content: center;   // 居中约束内容
   height: 50px;
   width: 100%;
   z-index: 999;
@@ -323,7 +330,6 @@ nav {
   html.dark & {
     background-color: $menu-bg-dark;
     border-bottom-color: rgba(255, 255, 255, 0.1);
-    // border-bottom-color: var(--mao-background-color);
   }
 
   &.hidden {
@@ -335,6 +341,19 @@ nav {
     html.dark & {
       background-color: transparent;
       border-bottom-color: transparent;
+    }
+  }
+
+  // 内容容器 — 约束宽度，与主内容区对齐
+  .nav-inner {
+    display: flex;
+    width: 100%;
+    max-width: $menu-max-width;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+
+    @media screen and (max-width: 910px) {
+      padding: 0 1rem;
     }
   }
 

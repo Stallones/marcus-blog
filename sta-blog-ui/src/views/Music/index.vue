@@ -1,11 +1,10 @@
 <script setup lang="ts">
-
 // 音乐模块前台
-const env = import.meta.env
+const env = import.meta.env;
 
 function iframeLoaded() {
-  document.getElementById('loading').style.display = 'none';
-  document.querySelector('iframe').style.visibility = 'visible';
+  document.getElementById("loading").style.display = "none";
+  document.querySelector("iframe").style.visibility = "visible";
 }
 </script>
 
@@ -13,7 +12,12 @@ function iframeLoaded() {
   <div>
     <div id="loading">正在加载...</div>
     <div>
-          <iframe :src="env.VITE_MUSIC_FRONTEND_URL" class="if" frameborder="0" :onload="iframeLoaded"></iframe>
+      <iframe
+        :src="env.VITE_MUSIC_FRONTEND_URL"
+        class="if"
+        frameborder="0"
+        :onload="iframeLoaded"
+      ></iframe>
     </div>
   </div>
 </template>
@@ -35,6 +39,6 @@ iframe {
 .if {
   width: 100vw;
   height: 100vh;
-  max-width: 100%
+  max-width: 100%;
 }
 </style>

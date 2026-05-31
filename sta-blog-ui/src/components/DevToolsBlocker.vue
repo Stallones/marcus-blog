@@ -362,13 +362,13 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 99999;
+  z-index: 10000; /* was 99999: 开发者工具屏蔽，系统最高层 */
   pointer-events: none;
 }
 
 .warning-container {
-  background: #ffffff;
-  color: #4a4158;
+  background: var(--mao-warning-bg);
+  color: var(--text-secondary);
   padding: 16px 24px;
   margin: 0 auto;
   width: 100%;
@@ -472,9 +472,9 @@ onUnmounted(() => {
 
 /* 暗色主题适配 */
 html[class='dark'] .warning-container {
-  background: #1e1b2d;
-  color: #e2e0e7;
-  border-color: #2d2644;
+  background: var(--mao-warning-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color-light);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 

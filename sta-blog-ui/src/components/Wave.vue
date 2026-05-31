@@ -98,7 +98,7 @@ p {
   position: relative;
   height: 20vh;
   text-align: center;
-  background-color: white;
+  background-color: var(--mao-background-color);
 }
 
 .parallax > use {

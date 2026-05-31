@@ -378,7 +378,7 @@ onUnmounted(() => {
   transform: translateX(-50%);
   display: flex;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--mao-glass-bg-light);
   backdrop-filter: blur(12px);
   padding: 12px 24px;
   border-radius: 20px;
@@ -389,7 +389,7 @@ onUnmounted(() => {
 }
 
 .preview-toolbar:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--mao-glass-bg-medium);
   transform: translateX(-50%) translateY(-2px);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }

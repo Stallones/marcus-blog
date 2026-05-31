@@ -292,7 +292,7 @@ async function changeToggle() {
     }
 
     & > div:hover {
-      background-color: #e0e2e5;
+      background-color: var(--mao-search-hover-bg);
       transition: background-color 0.3s linear;
     }
   }
@@ -337,7 +337,7 @@ async function changeToggle() {
     div:hover {
       cursor: pointer;
       color: #FE2C55FF;
-      background-color: #e0e2e5;
+      background-color: var(--mao-search-hover-bg);
       transition: background-color 0.3s linear;
     }
   }
@@ -387,7 +387,7 @@ async function changeToggle() {
 :deep(.el-input-group__append:hover) {
   // 背景颜色变化过渡
   transition: background-color 0.3s linear;
-  background-color: #e0e2e5;
+  background-color: var(--mao-search-hover-bg);
 }
 
 :deep(.el-input-group__append) {

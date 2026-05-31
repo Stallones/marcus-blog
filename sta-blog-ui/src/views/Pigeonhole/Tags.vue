@@ -72,13 +72,7 @@ async function getArticle(id: Number) {
 </script>
 
 <template>
-  <div>
-    <Main only-father-container>
-      <template #banner>
-        <Banner title="标签页" subtitle="tags" />
-      </template>
-      <template #content>
-        <div class="tags_container">
+  <div class="tags_container">
           <div class="title">标签{{ isQueryArticle ? ' - ' + title : '' }}</div>
           <!-- <template v-if="!isQueryArticle"> -->
           <template v-if="true">
@@ -101,9 +95,6 @@ async function getArticle(id: Number) {
             <el-divider />
             <ArticleList :article-list="articleList" />
           </template>
-        </div>
-      </template>
-    </Main>
   </div>
 </template>
 

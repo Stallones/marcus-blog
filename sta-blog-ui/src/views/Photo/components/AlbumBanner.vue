@@ -65,7 +65,7 @@ const props = defineProps<Props>()
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
   margin: 0 20px;
   margin-bottom: 30px;
-  background: linear-gradient(45deg, #2c3e50, #3498db);
+  background: var(--mao-album-banner-bg);
 }
 
 .banner-background {

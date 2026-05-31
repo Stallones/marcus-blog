@@ -26,8 +26,7 @@ const toggleContainer = () => {
   isContainerVisible.value = !isContainerVisible.value;
 };
 
-// 自定义事件
-const emit = defineEmits(['ReadingMode'])
+import { toggleReadingMode } from "@/components/Article/readingMode";
 
 
 </script>
@@ -35,7 +34,7 @@ const emit = defineEmits(['ReadingMode'])
 <template>
   <div class="container_div">
     <div class="hide" :class="{ visible: isContainerVisible }">
-      <div v-if="readingMode" @click="emit('ReadingMode', true)">
+      <div v-if="readingMode" @click="toggleReadingMode()">
         <ReadingMode/>
       </div>
 

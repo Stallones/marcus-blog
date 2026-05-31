@@ -356,7 +356,7 @@ const isAlbum = (item: GalleryItem): item is { type: 'album', data: AlbumData } 
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--mao-glass-bg);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   will-change: opacity, transform;
 }
@@ -462,7 +462,7 @@ const isAlbum = (item: GalleryItem): item is { type: 'album', data: AlbumData } 
 .default-album-cover {
   width: 100%;
   height: 100%;
-  background: linear-gradient(120deg, #e0e7ff 0%, #f5f7ff 100%);
+  background: var(--mao-album-cover-bg);
   display: flex;
   align-items: center;
   justify-content: center;

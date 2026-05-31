@@ -59,9 +59,9 @@ const id = "preview-only";
 
 .card {
   background-color: var(--el-bg-color);
-  width: $card-width;
-  margin: $card-margin;
-  border: 1px solid var(--el-border-color);
+  // width: $card-width;
+  // margin: $card-margin;
+  // border: 1px solid var(--el-border-color);
   border-radius: $border-radius;
   // 添加阴影
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

@@ -24,6 +24,8 @@ export const REQUEST_LOADING_PATH = [
     "/banners/list",
 ]
 
+export const MUSIC_API_PROXY = "/wapi"
+
 /**
  * 
  */

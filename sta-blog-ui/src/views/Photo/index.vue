@@ -439,7 +439,7 @@ const isDark = useDark()
   height: calc(100vh - 100px);
   overflow-y: auto;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--mao-glass-bg);
   backdrop-filter: blur(10px);
   border-radius: 12px;
   border: 1px solid rgba(92, 106, 196, 0.1);

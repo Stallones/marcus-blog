@@ -1,12 +1,13 @@
 <template>
-  <div v-if="useService.afterCheckService">
-    <router-view></router-view>
-  </div>
+  <router-view v-if="useService.afterCheckService" />
 
   <Loading></Loading>
-  <MusicAi />
+  <!-- <MusicAi /> -->
+   <!-- <Music /> -->
   <DevToolsBlocker :enableDevToolsBlocker="true" />
   <ContextMenu />
+  <CanvasLayer :imageUrl="aaa" />
+  <!-- <CanvasLayer /> -->
 </template>
 
 <script setup lang="ts">
@@ -15,8 +16,11 @@ import useWebsiteStore from "@/store/modules/website.ts";
 import DevToolsBlocker from "@/components/DevToolsBlocker.vue";
 import ContextMenu from "@/components/ContextMenu.vue";
 import MusicAi from "@/components/Music-ai/index.vue";
+import Music from "@/components/Music/index.vue";
 import { useServiceStore } from "./store/modules/service";
-import DayNightToggle from "./layouts/components/DayNightToggle.vue";
+import Loading from "@/components/Loading.vue";
+import CanvasLayer from "@/components/CanvasLayer/index.vue";
+import aaa from "@/assets/images/学习的史蒂夫.jpg";
 
 const useService = useServiceStore();
 const useWebsite = useWebsiteStore();

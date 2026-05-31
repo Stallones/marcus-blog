@@ -348,7 +348,7 @@ onUnmounted(() => {
 /* 完全重写样式，确保没有透明效果 */
 .context-menu {
   position: fixed;
-  z-index: 100000;
+  z-index: 10000; /* was 100000: 右键菜单，系统最高层 */
   user-select: none;
   animation: fadeIn 0.2s ease-out;
   filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.15));
@@ -360,13 +360,13 @@ onUnmounted(() => {
 }
 
 .menu-container {
-  background-color: #ffffff;
+  background-color: var(--mao-context-bg);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
-  border: 1px solid #f3f0ff;
+  border: 1px solid var(--border-color-light);
   min-width: 240px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-  color: #4a4158;
+  color: var(--text-secondary);
   position: relative;
   transition: all 0.2s ease;
   animation: slideIn 0.2s ease;
@@ -374,15 +374,15 @@ onUnmounted(() => {
 }
 
 html[class='dark'] .menu-container {
-  background-color: #1e1b2d;
-  border: 1px solid #2d2644;
-  color: #e2e0e7;
+  background-color: var(--mao-context-bg);
+  border: 1px solid var(--border-color-light);
+  color: var(--text-primary);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 html[class='dark'] .submenu {
-  background-color: #1e1b2d;
-  border: 1px solid #2d2644;
+  background-color: var(--mao-context-bg);
+  border: 1px solid var(--border-color-light);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -395,8 +395,8 @@ html[class='dark'] .submenu {
   display: flex;
   align-items: center;
   padding: 14px 16px;
-  border-bottom: 1px solid #f0e6ff;
-  background: linear-gradient(to right, #f9f5ff, #f5f3ff);
+  border-bottom: 1px solid var(--mao-context-divider);
+  background: var(--mao-context-header-bg);
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
   position: relative;
@@ -404,8 +404,8 @@ html[class='dark'] .submenu {
 }
 
 html[class='dark'] .menu-header {
-  background: linear-gradient(to right, #312a48, #2d2644);
-  border-bottom: 1px solid #372f52;
+  background: var(--mao-context-header-bg);
+  border-bottom: 1px solid var(--mao-context-divider);
 }
 
 .menu-title-icon {
@@ -433,11 +433,11 @@ html[class='dark'] .menu-header {
 .menu-divider {
   height: 1px;
   margin: 10px 0;
-  background: #f0e6ff;
+  background: var(--mao-context-divider);
 }
 
 html[class='dark'] .menu-divider {
-  background: #372f52;
+  background: var(--mao-context-divider);
 }
 
 .menu-item {

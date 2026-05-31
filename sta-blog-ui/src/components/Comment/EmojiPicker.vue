@@ -218,7 +218,7 @@ function updatePreviewPosition(event) {
   border: 1px solid #ffdbec;
   border-radius: 12px;
   width: 100%;
-  z-index: 999;
+  // z-index: 999; /* 无效：非定位元素上 z-index 不生效 */
   box-shadow: 0 4px 16px rgba(253, 195, 216, 0.2);
   overflow: hidden;
 
@@ -327,7 +327,7 @@ function updatePreviewPosition(event) {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(250, 170, 190, 0.3);
   padding: 10px;
-  z-index: 10000;
+  z-index: 50; /* was 10000: 表情预览弹窗，高于内容层级即可 */
   display: flex;
   flex-direction: column;
   align-items: center;

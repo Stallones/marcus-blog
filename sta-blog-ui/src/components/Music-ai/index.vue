@@ -34,21 +34,17 @@
           <div class="panel-left">
             <div class="panel-left-inner">
               <div class="section-title sticky-title">榜单</div>
-              <div v-if="store.isLoadingTop" class="loading-mask">
-                <div class="spinner"></div>
-              </div>
-              <div v-else class="top-grid">
+              <TransitionGroup name="top-fade" tag="div" class="top-grid">
                 <div
-                  v-for="top in store.topList.slice(0, 12)"
+                  v-for="top in store.topList"
                   :key="top.id"
                   class="top-item"
                   :class="{ active: store.currentTopId === top.id }"
                   @click="switchTop(top)"
                 >
                   <img :src="top.coverImgUrl" :alt="top.name" class="top-cover" />
-                  <div class="top-name">{{ top.name }}</div>
                 </div>
-              </div>
+              </TransitionGroup>
             </div>
           </div>
 
@@ -59,10 +55,7 @@
                 歌曲列表
                 <span class="song-count" v-if="store.songList.length">({{ store.songList.length }})</span>
               </div>
-              <div v-if="store.isLoadingSongs" class="loading-mask">
-                <div class="spinner"></div>
-              </div>
-              <div v-else class="song-list">
+              <div class="song-list" @scroll="onSongListScroll">
                 <div
                   v-for="(song, idx) in store.songList"
                   :key="song.id"
@@ -82,6 +75,9 @@
                   <div class="song-active-indicator" v-if="store.currentSongId === song.id">
                     <span></span><span></span><span></span>
                   </div>
+                </div>
+                <div v-if="store.isLoadingSongs && store.songList.length" class="load-more-hint">
+                  加载中...
                 </div>
               </div>
             </div>
@@ -202,6 +198,13 @@ function toggleMute() {
   } else {
     store.setVolume(wasMuted.value ? previousVolume.value : 0.5)
     wasMuted.value = false
+  }
+}
+
+function onSongListScroll(e: Event) {
+  const el = e.currentTarget as HTMLElement
+  if (el.scrollHeight - el.scrollTop - el.clientHeight < 60) {
+    store.loadMoreSongs()
   }
 }
 </script>
@@ -444,8 +447,8 @@ $radius: 12px;
   }
 
   .top-cover {
-    width: 64px;
-    height: 64px;
+    width: 90px;
+    height: 90px;
     border-radius: 8px;
     object-fit: cover;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -780,6 +783,54 @@ $radius: 12px;
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
+}
+
+// ══════════════════════════════════════
+//  榜单 TransitionGroup 动画
+// ══════════════════════════════════════
+.top-fade-enter-active {
+  animation: top-in 0.25s ease-out both;
+}
+.top-fade-leave-active {
+  animation: top-in 0.15s ease-in reverse both;
+}
+
+// nth-child 实现错位动画（本地是第1个，远程从第2个开始依次进入）
+.top-fade-enter-active:nth-child(2)  { animation-delay: 0s; }
+.top-fade-enter-active:nth-child(3)  { animation-delay: 0.05s; }
+.top-fade-enter-active:nth-child(4)  { animation-delay: 0.1s; }
+.top-fade-enter-active:nth-child(5)  { animation-delay: 0.15s; }
+.top-fade-enter-active:nth-child(6)  { animation-delay: 0.2s; }
+.top-fade-enter-active:nth-child(7)  { animation-delay: 0.25s; }
+.top-fade-enter-active:nth-child(8)  { animation-delay: 0.3s; }
+.top-fade-enter-active:nth-child(9)  { animation-delay: 0.35s; }
+.top-fade-enter-active:nth-child(10) { animation-delay: 0.4s; }
+.top-fade-enter-active:nth-child(11) { animation-delay: 0.45s; }
+.top-fade-enter-active:nth-child(12) { animation-delay: 0.5s; }
+.top-fade-enter-active:nth-child(13) { animation-delay: 0.55s; }
+
+@keyframes top-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/** 榜单区域固定高度，避免请求未返回时组件没高度 */
+.panel-left-inner {
+  min-height: 380px;
+}
+
+/** 滚动加载提示 */
+.load-more-hint {
+  text-align: center;
+  padding: 12px;
+  font-size: 11px;
+  color: $text-secondary;
 }
 
 // ── 响应式 ──

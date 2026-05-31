@@ -141,6 +141,23 @@ export function readBanners() {
   return Promise.resolve({ code: 200, msg: "success", data: bannerImages });
 }
 
+/** 本地搜索：根据文章 ID 列表从离线 JSON 提取完整 ArticleVO 列表 */
+export async function searchLocalArticles(ids: number[]): Promise<Page<ArticleVO>> {
+  const articleRes = await localResponse<ArticleVO[]>("/apis/article-detail");
+  const articles = (articleRes.data || []).filter((a) => ids.includes(a.id));
+
+  for (const article of articles) {
+    try {
+      const content = await readArticleContent(article.id, true, 60);
+      if (content) article.articleContent = content;
+    } catch {
+      article.articleContent = "";
+    }
+  }
+
+  return { page: articles, total: articles.length };
+}
+
 /** 从本地文件加载离线数据，根据 isCrypto() 自动补 .enc 或 .json 后缀
  * @param filePath 文件路径（不含后缀），如 '/apis/search-titles'、'/articles/3'
  */
